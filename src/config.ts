@@ -16,6 +16,7 @@ const baseEnvSchema = z.object({
   GLEAN_INDEXING_API_TOKEN: z.string().min(1).optional(),
   GLEAN_SEARCH_API_TOKEN: z.string().min(1).optional(),
   GLEAN_CLIENT_API_TOKEN: z.string().min(1).optional(),
+  GLEAN_CLIENT_ACT_AS: z.string().email().optional(),
 });
 
 export type BaseConfig = {
@@ -34,6 +35,7 @@ export type IngestConfig = BaseConfig & {
 export type AskConfig = BaseConfig & {
   searchApiToken: string;
   clientApiToken: string;
+  clientActAs?: string;
   datasource: string;
   topK: number;
   includeCitations: boolean;
@@ -110,6 +112,7 @@ export function loadAskConfig(options: {
       "GLEAN_CLIENT_API_TOKEN",
       env.GLEAN_CLIENT_API_TOKEN,
     ),
+    clientActAs: env.GLEAN_CLIENT_ACT_AS,
     datasource: options.datasource ?? base.defaultDatasource,
     topK: options.topK ?? base.defaultTopK,
     includeCitations: options.includeCitations ?? true,

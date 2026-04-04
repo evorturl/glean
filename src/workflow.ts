@@ -230,7 +230,13 @@ export async function askQuestion(
       },
     ],
     timeoutMillis: 20000,
-  });
+  }, undefined, undefined, config.clientActAs
+    ? {
+        headers: {
+          "X-Glean-ActAs": config.clientActAs,
+        },
+      }
+    : undefined);
 
   const assistantText = extractAssistantText(chatResponse.messages);
 
