@@ -76,7 +76,7 @@ function readNumberFlag(parsed: ParsedArgs, key: string) {
 
 function printUsage() {
   console.log(`Usage:
-  npm run ingest -- --allowed-user-email user@example.com [--datasource interviewds]
+  npm run ingest -- [--allowed-user-email user@example.com] [--datasource interviewds]
   npm run ask -- --question "What is the remote work policy?" [--datasource interviewds] [--top-k 4] [--include-citations true]`);
 }
 

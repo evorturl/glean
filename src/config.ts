@@ -13,6 +13,7 @@ const baseEnvSchema = z.object({
   GLEAN_SERVER_URL: z.string().url().optional(),
   GLEAN_DEFAULT_DATASOURCE: z.string().min(1).default("interviewds"),
   GLEAN_DEFAULT_TOP_K: z.coerce.number().int().positive().default(4),
+  GLEAN_ALLOWED_USER_EMAIL: z.string().email().optional(),
   GLEAN_INDEXING_API_TOKEN: z.string().min(1).optional(),
   GLEAN_SEARCH_API_TOKEN: z.string().min(1).optional(),
   GLEAN_CLIENT_API_TOKEN: z.string().min(1).optional(),
@@ -76,10 +77,14 @@ export function loadIngestConfig(options: {
 }): IngestConfig {
   const base = getBaseConfig();
   const env = loadBaseEnv();
+  const allowedUserEmail =
+    options.allowedUserEmail ??
+    env.GLEAN_ALLOWED_USER_EMAIL ??
+    env.GLEAN_CLIENT_ACT_AS;
 
-  if (!options.allowedUserEmail) {
+  if (!allowedUserEmail) {
     throw new Error(
-      "Missing allowed user email. Pass --allowed-user-email so indexed docs are visible to the sandbox user.",
+      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL in env/local.env, reuse GLEAN_CLIENT_ACT_AS, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
     );
   }
 
@@ -90,7 +95,7 @@ export function loadIngestConfig(options: {
       env.GLEAN_INDEXING_API_TOKEN,
     ),
     datasource: options.datasource ?? base.defaultDatasource,
-    allowedUserEmail: options.allowedUserEmail,
+    allowedUserEmail,
   };
 }
 
