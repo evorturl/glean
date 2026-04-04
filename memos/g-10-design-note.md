@@ -25,6 +25,12 @@ The shipped prototype has four main layers:
 3. Glean workflow orchestration in `src/workflow.ts`
 4. Local interfaces in `src/cli.ts` and `src/mcp.ts`
 
+Related diagrams:
+
+- `memos/diagrams/solution-overview.excalidraw`
+- `memos/diagrams/runtime-architecture.excalidraw`
+- `memos/diagrams/request-data-flow.excalidraw`
+
 ### Runtime flow
 
 1. Load environment variables from `env/local.env`.

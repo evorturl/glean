@@ -23,6 +23,14 @@ The project indexes a constrained fixture corpus into a sandbox datasource, retr
 - `scripts/`: reviewer-facing setup, demo, and cleanup wrappers
 - `memos/`: planning, validation, deploy, and design documentation
 
+## Diagrams
+
+Open these in Excalidraw for a quick visual pass:
+
+- `memos/diagrams/solution-overview.excalidraw`
+- `memos/diagrams/runtime-architecture.excalidraw`
+- `memos/diagrams/request-data-flow.excalidraw`
+
 ## Requirements
 
 - Node.js 22 or later
@@ -145,11 +153,12 @@ The tool returns both plain text content and structured output containing the an
 Recommended reviewer path:
 
 1. Read this README.
-2. Skim `memos/g-10-design-note.md` for architecture, tradeoffs, and limitations.
-3. Run `npm run check` and `npm run build`.
-4. Run `npm run demo`.
-5. Optionally start `npm run mcp` and exercise `ask_company_docs`.
-6. Review `memos/g-10-live-session-talking-points.md` for discussion topics.
+2. Open the Excalidraw files under `memos/diagrams/`.
+3. Skim `memos/g-10-design-note.md` for architecture, tradeoffs, and limitations.
+4. Run `npm run check` and `npm run build`.
+5. Run `npm run demo`.
+6. Optionally start `npm run mcp` and exercise `ask_company_docs`.
+7. Review `memos/g-10-live-session-talking-points.md` for discussion topics.
 
 ## Validation And CI
 
@@ -179,3 +188,6 @@ GitHub Actions:
 - `memos/g-9-deploy-readiness.md`
 - `memos/g-10-design-note.md`
 - `memos/g-10-live-session-talking-points.md`
+- `memos/diagrams/solution-overview.excalidraw`
+- `memos/diagrams/runtime-architecture.excalidraw`
+- `memos/diagrams/request-data-flow.excalidraw`
