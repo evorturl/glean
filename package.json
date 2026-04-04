@@ -1,0 +1,37 @@
+{
+  "name": "glean",
+  "version": "1.0.0",
+  "description": "Glean coding exercise prototype",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck",
+    "ingest": "tsx src/cli.ts ingest",
+    "ask": "tsx src/cli.ts ask",
+    "mcp": "tsx src/mcp.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evorturl/glean.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/evorturl/glean/issues"
+  },
+  "homepage": "https://github.com/evorturl/glean#readme",
+  "dependencies": {
+    "@gleanwork/api-client": "^0.14.14",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "dotenv": "^17.4.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
