@@ -34,6 +34,10 @@ function formatError(error: unknown) {
   return String(error);
 }
 
+function buildDatasourceViewURL(datasource: string, documentId: string) {
+  return `https://internal.company.com/${datasource}/${documentId}`;
+}
+
 function toDocumentDefinition(
   doc: Awaited<ReturnType<typeof loadFixtureDocuments>>[number],
   config: IngestConfig,
@@ -45,7 +49,7 @@ function toDocumentDefinition(
     id: doc.id,
     objectType: "Document",
     title: doc.title,
-    viewURL: doc.viewURL,
+    viewURL: buildDatasourceViewURL(config.datasource, doc.id),
     tags: doc.tags,
     summary: {
       mimeType: "text/plain",
@@ -79,7 +83,7 @@ export async function ingestFixtureCorpus(
     }
   } catch (error) {
     throw new Error(
-      `Failed to index documents into datasource "${config.datasource}". Confirm the indexing token has scope for that datasource and try again. Original error: ${formatError(
+      `Failed to index documents into datasource "${config.datasource}". Confirm the datasource name, required URL pattern, and token permissions for that datasource before retrying. Original error: ${formatError(
         error,
       )}`,
     );

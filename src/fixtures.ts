@@ -15,7 +15,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "remote-work-policy",
     title: "Remote Work Policy",
     filename: "remote-work-policy.md",
-    viewURL: "https://intranet.example.com/policies/remote-work-policy",
     summary:
       "Explains hybrid schedule expectations, remote work abroad limits, and approval requirements.",
     tags: ["policy", "remote-work", "people-ops"],
@@ -24,7 +23,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "paid-time-off-and-holidays",
     title: "Paid Time Off and Holidays",
     filename: "paid-time-off-and-holidays.md",
-    viewURL: "https://intranet.example.com/policies/paid-time-off-and-holidays",
     summary:
       "Covers PTO allowances, holiday schedule, and manager approval timing.",
     tags: ["policy", "pto", "holidays"],
@@ -33,7 +31,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "it-help-desk-onboarding",
     title: "IT Help Desk Onboarding Guide",
     filename: "it-help-desk-onboarding.md",
-    viewURL: "https://intranet.example.com/it/help-desk-onboarding",
     summary:
       "Describes new-hire laptop setup, VPN, MFA, and IT support response times.",
     tags: ["it", "support", "onboarding"],
@@ -42,7 +39,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "expense-reimbursement-policy",
     title: "Expense Reimbursement Policy",
     filename: "expense-reimbursement-policy.md",
-    viewURL: "https://intranet.example.com/finance/expense-reimbursement-policy",
     summary:
       "Explains reimbursable travel costs, receipt requirements, and submission deadlines.",
     tags: ["finance", "expenses", "travel"],
@@ -51,7 +47,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "security-and-password-standards",
     title: "Security and Password Standards",
     filename: "security-and-password-standards.md",
-    viewURL: "https://intranet.example.com/security/password-standards",
     summary:
       "Defines password manager use, MFA, phishing escalation, and remote security expectations.",
     tags: ["security", "passwords", "remote-work"],
@@ -60,7 +55,6 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "travel-and-conference-policy",
     title: "Travel and Conference Policy",
     filename: "travel-and-conference-policy.md",
-    viewURL: "https://intranet.example.com/policies/travel-and-conference-policy",
     summary:
       "Documents business-travel approvals, conference budgeting, and international travel guardrails.",
     tags: ["travel", "policy", "conferences"],
