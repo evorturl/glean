@@ -2,67 +2,63 @@
 
 ## Summary
 
-`G-7` is partially complete: the local TypeScript prototype, fixture corpus, CLI commands, and MCP server are implemented, but the sprint is blocked from full end-to-end validation because the provided Indexing API token does not have permission to write to any of the allowed sandbox datasources.
+The previously reported `G-7` blocker has been reviewed and corrected.
 
-This memo documents:
+The root cause was not missing Indexing API permissions. The prototype was using the wrong datasource names and also generated `viewURL` values that did not match the selected datasource's URL regex. After correcting those issues, the required APIs were validated successfully.
 
-- the blocker,
-- how to fix it,
-- the current status of the other required APIs,
-- and what remains to validate once the blocker is removed.
+This memo records:
 
-## Blocking Issue
+- the corrected blocker diagnosis,
+- the fix that resolved it,
+- the tested status of the required APIs,
+- and the current residual risk to keep in mind during later sprints.
 
-### What is blocked
+## Corrected Diagnosis
 
-The exercise requires indexing a small document set into one of the provided sandbox datasources before search and grounded chat can be demonstrated against that data.
+### Original mistake
 
-The current `GLEAN_INDEXING_API_TOKEN` fails when used with the provided datasource options such as `interviews`, `interviews2`, `interviews3`, `interviews4`, `interviews5`, and `interviews6`.
+The earlier blocker investigation used datasource names such as `interviews`, `interviews2`, and so on.
 
-### Reproduction
+The task brief actually refers to datasources named:
 
-Observed failures:
+- `interviewds`
+- `interviewds2`
+- `interviewds3`
+- `interviewds4`
+- `interviewds5`
+- `interviewds6`
 
-- `npm run ingest -- --datasource interviews --allowed-user-email alex@glean-sandbox.com`
-- direct request to `/api/index/v1/getdatasourceconfig` for each provided datasource
+Because the wrong datasource names were used, the earlier memo incorrectly concluded that the Indexing API token lacked the required scopes.
 
-Representative response:
+### Actual issue
+
+Once the correct datasource names were tested, the token could access them successfully. The remaining ingest failure was:
 
 ```text
-Indexing API error: code: 401, msg: Token does not have necessary scopes.
-Requires either global scope, or the following scopes: [INTERVIEWS]
+Indexing API error: code: 400, msg: View URL https://intranet.example.com/policies/remote-work-policy does not match the URL Regex pattern https://internal.company.com/interviewds/.* for the datasource.
 ```
 
-### Impact
+So the real problem was:
 
-- fixture documents cannot be indexed into the required sandbox datasource
-- the MCP tool cannot be validated against exercise-specific content
-- the Search and Chat workflow cannot yet be demonstrated on the indexed corpus required by the prompt
+1. wrong datasource names in the implementation and blocker memo, and
+2. `viewURL` values that did not satisfy the sandbox datasource's configured URL pattern.
 
-## How To Fix The Blocker
+### Resolution
 
-Provide an Indexing API token that has one of the following:
+The prototype was updated to:
 
-- global indexing scope, or
-- datasource scope for at least one allowed sandbox datasource such as `INTERVIEWS`, `INTERVIEWS2`, `INTERVIEWS3`, `INTERVIEWS4`, `INTERVIEWS5`, or `INTERVIEWS6`
+- default to `interviewds`,
+- use the correct datasource family in CLI guidance and runtime defaults,
+- generate datasource-compatible document URLs of the form `https://internal.company.com/<datasource>/<document-id>`,
+- retain optional `GLEAN_CLIENT_ACT_AS` support for the chat token.
 
-Then update `env/local.env` with the replacement token and rerun:
-
-```bash
-npm run ingest -- --datasource interviews --allowed-user-email alex@glean-sandbox.com
-```
-
-After indexing succeeds, validate the exercise flow by running:
-
-```bash
-npm run ask -- --datasource interviews --question "Can I work remotely while attending a conference abroad?"
-```
+After those changes, ingest succeeded and the end-to-end ask flow ran successfully.
 
 ## Required API Status
 
 ### 1. Indexing API
 
-Status: blocked by permissions
+Status: working
 
 Tested:
 
@@ -70,20 +66,27 @@ Tested:
 
 What was tested:
 
-- datasource config lookup for the provided sandbox datasources
-- document ingest through the prototype CLI
+- direct datasource config lookups for `interviewds` through `interviewds6`
+- prototype ingest command against `interviewds`
 
-Current permission status:
+Successful validation:
 
-- insufficient
+```bash
+npm run ingest -- --datasource interviewds --allowed-user-email alex@glean-sandbox.com
+```
 
-What is missing:
+Observed result:
 
-- datasource-specific indexing scope or global indexing scope
+- six fixture documents indexed successfully
+- document processing was triggered successfully for the datasource
+
+Permission status:
+
+- sufficient for the real sandbox datasource names
 
 Conclusion:
 
-- the Indexing API is the active blocker for end-to-end completion of `G-7`
+- the Indexing API is usable for the exercise
 
 ### 2. Search API
 
@@ -95,24 +98,21 @@ Tested:
 
 What was tested:
 
-- direct request to `POST /rest/api/v1/search` against the sandbox instance
-- successful 200 response for a general query
+- direct request to `POST /rest/api/v1/search`
+- prototype search path through `npm run ask`
 
 Observed result:
 
-- the search token returned results successfully, which indicates the token is valid and has the needed search permission
-
-Limitations of current validation:
-
-- search has not yet been validated against the exercise datasource because the indexing blocker prevents the fixture corpus from being uploaded
+- direct search requests returned successful responses
+- the ask flow was able to retrieve results from the corrected datasource
 
 Conclusion:
 
-- the Search API appears usable for the exercise once documents can be indexed
+- the Search API is working for the exercise flow
 
 ### 3. Client / Chat API
 
-Status: working with additional auth header
+Status: working with `X-Glean-ActAs`
 
 Tested:
 
@@ -121,57 +121,45 @@ Tested:
 What was tested:
 
 - direct request to `POST /rest/api/v1/chat` without `X-Glean-ActAs`
-- direct request to the same endpoint with `X-Glean-ActAs: alex@glean-sandbox.com`
+- direct request with `X-Glean-ActAs: alex@glean-sandbox.com`
+- prototype ask flow with `GLEAN_CLIENT_ACT_AS=alex@glean-sandbox.com`
 
 Observed result:
 
-- without `X-Glean-ActAs`, the request failed with:
-
-```text
-Required header missing: X-Glean-ActAs
-Not allowed
-```
-
-- with `X-Glean-ActAs`, the request succeeded and returned a valid chat response
-
-Current permission status:
-
-- sufficient when used as a global token with `X-Glean-ActAs`
+- without `X-Glean-ActAs`, the chat token failed
+- with `X-Glean-ActAs`, chat returned a valid response
+- the end-to-end ask flow completed successfully when the same auth mode was used
 
 Implementation note:
 
-- the prototype has been updated to support an optional `GLEAN_CLIENT_ACT_AS` setting so the chat flow can use this token correctly
+- the prototype now supports optional `GLEAN_CLIENT_ACT_AS` so the chat flow can use this token correctly
 
 Conclusion:
 
-- the Chat API is not blocked, but it requires the correct auth mode
+- the Chat API is usable for the exercise as long as the token is used with the correct auth header
 
-## Current Build Status
-
-Implemented:
-
-- TypeScript project scaffolding
-- fixture employee-support corpus
-- config loading for Glean tokens and runtime settings
-- indexing, search, and chat workflow modules
-- CLI commands for `ingest` and `ask`
-- local MCP server exposing a single `ask_company_docs` tool
-- improved error handling around indexing scope failures and empty retrieval
-- optional support for `GLEAN_CLIENT_ACT_AS`
+## End-To-End Validation Status
 
 Validated:
 
 - `npm run typecheck`
 - `npm run build`
-- search token health check
-- chat token health check with `X-Glean-ActAs`
+- `npm run ingest -- --datasource interviewds --allowed-user-email alex@glean-sandbox.com`
+- `GLEAN_CLIENT_ACT_AS=alex@glean-sandbox.com npm run ask -- --datasource interviewds --question "Can I work remotely while attending a conference abroad?"`
 
-Not yet validated:
+Observed outcome:
 
-- successful ingestion into a sandbox datasource
-- successful end-to-end grounded answer over the fixture corpus
-- MCP invocation against indexed sandbox content
+- the fixture corpus was indexed successfully
+- the search and chat workflow returned a grounded answer with sources
+
+## Residual Risk
+
+The selected sandbox datasource is not empty, so search results may include previously indexed documents in addition to the fixture corpus. This is not blocking, but it can affect how clean the returned citations look.
+
+Potential follow-up improvement:
+
+- add a stronger document-level filter or more distinctive document IDs/metadata if later validation needs tighter control over which indexed items appear in search results
 
 ## Recommended Next Step
 
-Resolve the indexing-token scope issue first. Once a token with the needed datasource permission is available, re-run ingest and then complete end-to-end validation for search, chat, and the MCP tool.
+The blocker issue created from the earlier diagnosis can be closed. `G-7` can now be reviewed based on a working end-to-end prototype rather than a blocked implementation.

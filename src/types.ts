@@ -2,7 +2,6 @@ export type FixtureDocument = {
   id: string;
   title: string;
   filename: string;
-  viewURL: string;
   summary: string;
   tags: string[];
   body: string;
