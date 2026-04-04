@@ -14,11 +14,11 @@ function makeClient(apiToken: string, serverURL: string) {
   return new Glean({ apiToken, serverURL });
 }
 
-function compactWhitespace(value: string) {
+export function compactWhitespace(value: string) {
   return value.replace(/\s+/g, " ").trim();
 }
 
-function clip(value: string, maxLength: number) {
+export function clip(value: string, maxLength: number) {
   if (value.length <= maxLength) {
     return value;
   }
@@ -34,7 +34,7 @@ function formatError(error: unknown) {
   return String(error);
 }
 
-function buildDatasourceViewURL(datasource: string, documentId: string) {
+export function buildDatasourceViewURL(datasource: string, documentId: string) {
   return `https://internal.company.com/${datasource}/${documentId}`;
 }
 
@@ -86,12 +86,14 @@ export async function ingestFixtureCorpus(
       `Failed to index documents into datasource "${config.datasource}". Confirm the datasource name, required URL pattern, and token permissions for that datasource before retrying. Original error: ${formatError(
         error,
       )}`,
+      {
+        cause: error,
+      },
     );
   }
 
   let processingTriggered = false;
-  let processingMessage =
-    "Submitted documents successfully. If they are not searchable immediately, wait briefly and retry.";
+  let processingMessage: string;
 
   try {
     await indexingClient.indexing.documents.processAll({
@@ -154,7 +156,7 @@ async function retrieveSources(
   return { sources, response };
 }
 
-function buildGroundedPrompt(question: string, sources: AskSource[]) {
+export function buildGroundedPrompt(question: string, sources: AskSource[]) {
   const context = sources
     .map(
       (source, index) =>
@@ -178,7 +180,7 @@ Excerpt: ${source.snippet}`,
   ].join("\n");
 }
 
-function extractAssistantText(messages: ChatMessage[] | undefined) {
+export function extractAssistantText(messages: ChatMessage[] | undefined) {
   if (!messages) {
     return "";
   }
@@ -204,7 +206,7 @@ function extractAssistantText(messages: ChatMessage[] | undefined) {
   return "";
 }
 
-function buildCitationAppendix(sources: AskSource[]) {
+export function buildCitationAppendix(sources: AskSource[]) {
   return sources
     .map(
       (source, index) =>
