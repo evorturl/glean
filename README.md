@@ -1,0 +1,181 @@
+# Glean Coding Exercise Prototype
+
+This repository contains a small employee-support chatbot prototype built around the Glean Indexing, Search, and Chat APIs plus a local MCP tool.
+
+The project indexes a constrained fixture corpus into a sandbox datasource, retrieves relevant content for a natural-language question, and asks Glean Chat to produce a grounded answer with citations.
+
+## What Is Included
+
+- a TypeScript CLI for ingest and ask flows
+- a local MCP server exposing one tool: `ask_company_docs`
+- a small employee-support fixture corpus under `fixtures/employee-support/`
+- unit tests, an end-to-end smoke script, and GitHub Actions validation
+- sprint memos under `memos/` covering planning, blocker resolution, testing, deploy readiness, and final documentation
+
+## Repository Map
+
+- `src/config.ts`: environment loading and runtime config validation
+- `src/fixtures.ts`: fixture corpus metadata and file loading
+- `src/workflow.ts`: Glean ingest, search, and grounded chat orchestration
+- `src/cli.ts`: local ingest and ask command surface
+- `src/mcp.ts`: MCP server registration for `ask_company_docs`
+- `test/`: focused unit coverage for config and workflow helpers
+- `scripts/`: reviewer-facing setup, demo, and cleanup wrappers
+- `memos/`: planning, validation, deploy, and design documentation
+
+## Requirements
+
+- Node.js 22 or later
+- npm
+- access to the Glean sandbox instance and datasource family used for the exercise
+- valid values for the required environment variables in `env/local.env`
+
+## Quick Start
+
+1. Install dependencies and create the local env file template:
+
+```bash
+npm run setup
+```
+
+2. Fill in `env/local.env` using `env/local.env.example`.
+
+3. Run the local quality suite:
+
+```bash
+npm run check
+```
+
+4. Build the project:
+
+```bash
+npm run build
+```
+
+5. Run the default end-to-end demo:
+
+```bash
+npm run demo
+```
+
+## Environment Variables
+
+Required API tokens:
+
+- `GLEAN_INDEXING_API_TOKEN`
+- `GLEAN_SEARCH_API_TOKEN`
+- `GLEAN_CLIENT_API_TOKEN`
+
+Required identity input:
+
+- `GLEAN_ALLOWED_USER_EMAIL` for document visibility during ingest, or
+- `GLEAN_CLIENT_ACT_AS` when the same sandbox user should also be reused as the ingest visibility identity
+
+Defaults already captured in `env/local.env.example`:
+
+- `GLEAN_INSTANCE=support-lab`
+- `GLEAN_DEFAULT_DATASOURCE=interviewds`
+- `GLEAN_DEFAULT_TOP_K=4`
+
+Optional overrides:
+
+- `GLEAN_SERVER_URL`
+- `GH_TOKEN`
+- `LINEAR_API_KEY`
+
+## Commands
+
+- `npm run setup`: install dependencies and create `env/local.env` from the tracked example when missing
+- `npm run ingest`: index the fixture corpus into the configured datasource
+- `npm run ask -- --question "..."`: run retrieval plus grounded answer generation from the CLI
+- `npm run demo`: run the default ingest and question flow
+- `npm run mcp`: start the local MCP server over stdio
+- `npm run check`: run lint, typecheck, and unit tests
+- `npm run build`: compile TypeScript to `dist/`
+- `npm run test:e2e -- --allowed-user-email user@example.com`: run the sandbox smoke test
+- `npm run clean`: remove local build output
+
+## CLI Examples
+
+Ingest the fixture corpus:
+
+```bash
+npm run ingest
+```
+
+Ask a question:
+
+```bash
+npm run ask -- --question "Can I work remotely while attending a conference abroad?"
+```
+
+Override the datasource or retrieval depth:
+
+```bash
+npm run ask -- --datasource interviewds --top-k 5 --question "How long do I have to submit travel receipts?"
+```
+
+## MCP Usage
+
+Start the server:
+
+```bash
+npm run mcp
+```
+
+Registered tool:
+
+- `ask_company_docs`
+
+Example tool input:
+
+```json
+{
+  "question": "Can I work remotely while attending a conference abroad?",
+  "datasource": "interviewds",
+  "topK": 4,
+  "includeCitations": true
+}
+```
+
+The tool returns both plain text content and structured output containing the answer, selected datasource, sources, and search request ID.
+
+## Review Flow
+
+Recommended reviewer path:
+
+1. Read this README.
+2. Skim `memos/g-10-design-note.md` for architecture, tradeoffs, and limitations.
+3. Run `npm run check` and `npm run build`.
+4. Run `npm run demo`.
+5. Optionally start `npm run mcp` and exercise `ask_company_docs`.
+6. Review `memos/g-10-live-session-talking-points.md` for discussion topics.
+
+## Validation And CI
+
+Local validation:
+
+- `npm run check`
+- `npm run build`
+- `npm run test:e2e`
+
+GitHub Actions:
+
+- `Branch CI`: lint, typecheck, unit tests, build, and secret scanning on non-`main` branches and pull requests
+- `CodeQL`: static analysis for the TypeScript codebase
+- `Main Integration`: sandbox smoke validation on `main` when the required secrets are configured
+
+## Known Caveats
+
+- The sandbox datasource is shared, so search results can include content beyond the fixture corpus.
+- Repeated ingest runs can hit `processAll` rate limiting (`429`) without preventing already-uploaded documents from being searchable.
+- The current implementation favors a small, reviewable prototype over production concerns such as multi-user isolation, robust filtering, or deployment packaging beyond local review.
+
+## Related Notes
+
+- `memos/g-6-sprint-1-plan.md`
+- `memos/g-7-blocker-and-api-status.md`
+- `memos/g-8-test-plan-and-outcomes.md`
+- `memos/g-9-deploy-readiness.md`
+- `memos/g-10-design-note.md`
+- `memos/g-10-live-session-talking-points.md`
