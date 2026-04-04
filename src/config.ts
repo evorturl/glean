@@ -45,7 +45,7 @@ function loadBaseEnv() {
   return baseEnvSchema.parse(process.env);
 }
 
-function deriveServerURL(instance: string, override?: string) {
+export function deriveServerURL(instance: string, override?: string) {
   return override ?? `https://${instance}-be.glean.com`;
 }
 
