@@ -161,13 +161,13 @@ Recommended reviewer path:
 6. Optionally start `npm run mcp` and exercise `ask_company_docs`.
 7. Review `memos/g-10-live-session-talking-points.md` for discussion topics.
 
-## Interview Prep
+## Onboarding
 
-For the follow-up interview preparation materials, start with:
+For a new engineer joining the project, start with:
 
-- `memos/g-42-interview-prep-guide.md`
+- `memos/g-44-engineer-onboarding.md`
 
-That guide links the recommended order for:
+For the interview-prep materials created during Sprint 6, use:
 
 - `memos/g-38-walkthrough-and-demo.md`
 - `memos/g-39-collaborative-design-discussion.md`
@@ -204,7 +204,7 @@ GitHub Actions:
 - `memos/g-38-walkthrough-and-demo.md`
 - `memos/g-39-collaborative-design-discussion.md`
 - `memos/g-40-live-coding-prep.md`
-- `memos/g-42-interview-prep-guide.md`
+- `memos/g-44-engineer-onboarding.md`
 - `memos/diagrams/solution-overview.excalidraw`
 - `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
