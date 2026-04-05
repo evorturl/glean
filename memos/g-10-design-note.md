@@ -30,6 +30,7 @@ Related diagrams:
 - `memos/diagrams/solution-overview.excalidraw`
 - `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
+- `memos/diagrams/runtime-flow-annotated.excalidraw`
 
 ### Runtime flow
 
