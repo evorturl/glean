@@ -30,6 +30,7 @@ Open these in Excalidraw for a quick visual pass:
 - `memos/diagrams/solution-overview.excalidraw`
 - `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
+- `memos/diagrams/runtime-flow-annotated.excalidraw`
 
 ## Requirements
 
@@ -207,3 +208,4 @@ GitHub Actions:
 - `memos/diagrams/solution-overview.excalidraw`
 - `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
+- `memos/diagrams/runtime-flow-annotated.excalidraw`
