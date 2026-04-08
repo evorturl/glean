@@ -35,31 +35,33 @@ Open these in Excalidraw for a quick visual pass:
 - Node.js 22 or later
 - npm
 - access to the Glean sandbox instance and datasource family used for the exercise
-- valid values in `env/variables.env` and `env/secrets.env`
+- valid values in local `env/variables.env` and `env/secrets.env`
 
 ## Quick Start
 
-1. Install dependencies and create `env/secrets.env` from the tracked example if it is missing:
+1. Install dependencies and create local `env/variables.env` and `env/secrets.env` from the tracked examples if either file is missing:
 
 ```bash
 npm run setup
 ```
 
-2. Fill in `env/secrets.env` using `env/secrets.env.example`. Review `env/variables.env` if you need to change the tracked non-sensitive defaults.
+2. Review `env/variables.env` using `env/variables.env.example`. Keep the defaults or update the non-secret values for your sandbox user and datasource.
 
-3. Run the local quality suite:
+3. Fill in `env/secrets.env` using `env/secrets.env.example`.
+
+4. Run the local quality suite:
 
 ```bash
 npm run check
 ```
 
-4. Build the project:
+5. Build the project:
 
 ```bash
 npm run build
 ```
 
-5. Run the default end-to-end demo:
+6. Run the default end-to-end demo:
 
 ```bash
 npm run demo
@@ -67,26 +69,28 @@ npm run demo
 
 ## Environment Variables
 
-Tracked non-sensitive config in `env/variables.env`:
+Example non-sensitive config in `env/variables.env.example` is copied to local `env/variables.env`:
 
 - `GLEAN_INSTANCE`
 - `GLEAN_DEFAULT_DATASOURCE`
 - `GLEAN_DEFAULT_TOP_K`
 - optional `GLEAN_SERVER_URL`
+- `GLEAN_ALLOWED_USER_EMAIL` or `GLEAN_CLIENT_ACT_AS`
 
-Populate secrets and user-specific values in `env/secrets.env`:
+Example secrets in `env/secrets.env.example` are copied to local `env/secrets.env`:
 
 - `GLEAN_INDEXING_API_TOKEN`
 - `GLEAN_SEARCH_API_TOKEN`
 - `GLEAN_CLIENT_API_TOKEN`
-- `GLEAN_ALLOWED_USER_EMAIL` or `GLEAN_CLIENT_ACT_AS`
+- optional `GH_TOKEN`
+- optional `LINEAR_API_KEY`
 
 Required identity input:
 
-- `GLEAN_ALLOWED_USER_EMAIL` for document visibility during ingest, or
-- `GLEAN_CLIENT_ACT_AS` when the same sandbox user should also be reused as the ingest visibility identity
+- `GLEAN_ALLOWED_USER_EMAIL` in `env/variables.env` for document visibility during ingest, or
+- `GLEAN_CLIENT_ACT_AS` in `env/variables.env` when the same sandbox user should also be reused as the ingest visibility identity
 
-Tracked defaults already supplied in `env/variables.env`:
+Default non-secret values shipped in `env/variables.env.example`:
 
 - `GLEAN_INSTANCE=support-lab`
 - `GLEAN_DEFAULT_DATASOURCE=interviewds`
@@ -94,13 +98,13 @@ Tracked defaults already supplied in `env/variables.env`:
 
 Optional overrides:
 
-- `GLEAN_SERVER_URL`
-- `GH_TOKEN`
-- `LINEAR_API_KEY`
+- `GLEAN_SERVER_URL` in `env/variables.env`
+- `GH_TOKEN` in `env/secrets.env`
+- `LINEAR_API_KEY` in `env/secrets.env`
 
 ## Commands
 
-- `npm run setup`: install dependencies and create `env/secrets.env` from the tracked example when missing
+- `npm run setup`: install dependencies and create local `env/variables.env` and `env/secrets.env` from the tracked examples when missing
 - `npm run ingest`: index the fixture corpus into the configured datasource
 - `npm run ask -- --question "..."`: run retrieval plus grounded answer generation from the CLI
 - `npm run demo`: run the default ingest and question flow

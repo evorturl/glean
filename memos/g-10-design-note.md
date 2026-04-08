@@ -32,7 +32,7 @@ Related diagrams:
 
 ### Runtime flow
 
-1. Load environment variables from `env/variables.env` and `env/secrets.env`.
+1. Load environment variables from local `env/variables.env` and `env/secrets.env`.
 2. Validate tokens, datasource, and identity settings.
 3. Convert the local fixture corpus into Glean document definitions.
 4. Ingest those documents into the selected sandbox datasource.
@@ -45,7 +45,7 @@ Related diagrams:
 
 ### Indexing API
 
-Used to upload the fixture corpus and trigger datasource processing.
+Used to upload the fixture corpus into the sandbox datasource.
 
 Implementation detail:
 
@@ -120,11 +120,12 @@ Use this path for a fast evaluation:
 
 1. Read `README.md`.
 2. Run `npm run setup`.
-3. Populate `env/secrets.env`.
-4. Run `npm run check`.
-5. Run `npm run build`.
-6. Run `npm run demo`.
-7. Optionally run `npm run mcp` and call `ask_company_docs`.
+3. Populate `env/variables.env`.
+4. Populate `env/secrets.env`.
+5. Run `npm run check`.
+6. Run `npm run build`.
+7. Run `npm run demo`.
+8. Optionally run `npm run mcp` and call `ask_company_docs`.
 
 Representative question:
 

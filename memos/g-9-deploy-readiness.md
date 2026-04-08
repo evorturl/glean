@@ -6,9 +6,9 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 
 ## Reviewer Setup
 
-1. Run `npm run setup` to install dependencies and create `env/secrets.env` from the tracked example when missing.
-2. Fill in the required Glean tokens and sandbox identity values in `env/secrets.env`.
-3. Review `env/variables.env` if you need to change the tracked non-sensitive runtime values.
+1. Run `npm run setup` to install dependencies and create local `env/variables.env` and `env/secrets.env` from the tracked examples when missing.
+2. Fill in the required sandbox identity values in `env/variables.env`.
+3. Fill in the required Glean tokens in `env/secrets.env`.
 
 ## Environment Variables
 
@@ -25,20 +25,20 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 
 ### Required in `env/variables.env`
 
-- `GLEAN_INSTANCE`: set to `support-lab` in the tracked file.
-- `GLEAN_DEFAULT_DATASOURCE`: set to `interviewds` in the tracked file.
-- `GLEAN_DEFAULT_TOP_K`: set to `4` in the tracked file.
+- `GLEAN_INSTANCE`: set to `support-lab` in `env/variables.env.example`.
+- `GLEAN_DEFAULT_DATASOURCE`: set to `interviewds` in `env/variables.env.example`.
+- `GLEAN_DEFAULT_TOP_K`: set to `4` in `env/variables.env.example`.
+- `GLEAN_ALLOWED_USER_EMAIL` or `GLEAN_CLIENT_ACT_AS`: set this sandbox identity locally in `env/variables.env`.
 
 ### Optional
 
 - `GLEAN_SERVER_URL`: optional override in `env/variables.env` if the backend URL does not follow the instance-derived pattern.
-- `GLEAN_CLIENT_ACT_AS`: needed when the chat token is a global token that requires `X-Glean-ActAs`.
 - `GH_TOKEN`: only needed for GitHub automation from this repo.
 - `LINEAR_API_KEY`: only needed for Linear automation from this repo.
 
 ## Command Surface
 
-- `npm run setup`: installs dependencies and creates `env/secrets.env` from the tracked example when missing.
+- `npm run setup`: installs dependencies and creates local `env/variables.env` and `env/secrets.env` from the tracked examples when missing.
 - `npm run ingest`: uploads the fixture documents into the configured sandbox datasource and prints the immediate search/discoverability follow-up path.
 - `npm run ask -- --question "..."`: asks a grounded question against the configured datasource.
 - `npm run demo`: runs the default ingest plus a representative question end to end.
@@ -52,11 +52,12 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 Use this order during review:
 
 1. `npm run setup`
-2. Populate `env/secrets.env`
-3. `npm run check`
-4. `npm run build`
-5. `npm run demo`
-6. Optional: `npm run mcp`
+2. Populate `env/variables.env`
+3. Populate `env/secrets.env`
+4. `npm run check`
+5. `npm run build`
+6. `npm run demo`
+7. Optional: `npm run mcp`
 
 The default demo question is:
 
@@ -77,7 +78,7 @@ If a reviewer runs `npm run ingest` separately, the CLI now also prints:
 - install with `npm run setup`,
 - pass `npm run check`,
 - build with `npm run build`,
-- and run `npm run demo` after a real `env/secrets.env` is provided.
+- and run `npm run demo` after real `env/variables.env` and `env/secrets.env` files are provided.
 
 ## Known Caveats
 

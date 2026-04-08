@@ -8,7 +8,7 @@ SECRETS_ENV_FILE="${SECRETS_ENV_FILE:-${ROOT_DIR}/env/secrets.env}"
 QUESTION="${1:-Can I work remotely while attending a conference abroad?}"
 
 if [[ ! -f "${VARIABLES_ENV_FILE}" ]]; then
-  echo "Missing ${VARIABLES_ENV_FILE}. Restore it from git before running the demo."
+  echo "Missing ${VARIABLES_ENV_FILE}. Run ./scripts/setup.sh first to create it from env/variables.env.example."
   exit 1
 fi
 
@@ -23,7 +23,7 @@ source "${SECRETS_ENV_FILE}"
 set +a
 
 if [[ -z "${GLEAN_ALLOWED_USER_EMAIL:-}" && -z "${GLEAN_CLIENT_ACT_AS:-}" ]]; then
-  echo "Missing GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in ${SECRETS_ENV_FILE}."
+  echo "Missing GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in ${VARIABLES_ENV_FILE}."
   exit 1
 fi
 

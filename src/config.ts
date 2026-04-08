@@ -119,7 +119,7 @@ export function loadIngestConfig(options: {
 
   if (!allowedUserEmail) {
     throw new Error(
-      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in env/secrets.env, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
+      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in env/variables.env, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
     );
   }
 

@@ -113,7 +113,7 @@ What to call out as the command runs:
 
 - ingest assumptions:
   - the flow targets the sandbox datasource family, defaulting to `interviewds`
-  - secrets come from `env/secrets.env`, while non-sensitive runtime defaults live in tracked `env/variables.env`
+  - secrets come from local `env/secrets.env`, while non-secret runtime values live in local `env/variables.env` created from the tracked examples
   - the sandbox can rate-limit `processAll`, but previously uploaded documents can still remain searchable
 - retrieval behavior:
   - search is scoped to the configured datasource
@@ -248,11 +248,11 @@ Speaker note:
 
 Suggested script:
 
-> I wanted setup to be explicit and reproducible, so runtime config is validated up front. The repo ships with a tracked sample env file, but the real tokens stay local. I also made the allowed-user identity explicit because the ingest permissions and chat impersonation mode matter in this sandbox.
+> I wanted setup to be explicit and reproducible, so runtime config is validated up front. The repo ships with tracked example env files, but the real runtime values stay local. I also made the allowed-user identity explicit because the ingest permissions and chat impersonation mode matter in this sandbox.
 
 Show:
 
-- `env/variables.env`
+- `env/variables.env.example`
 - `env/secrets.env.example`
 - `src/config.ts`
 - `memos/g-9-deploy-readiness.md`
