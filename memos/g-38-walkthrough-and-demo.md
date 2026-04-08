@@ -87,7 +87,7 @@ Suggested script:
 Specific code areas to point at:
 
 - `toDocumentDefinition()` for ingest shaping and permissions
-- `ingestFixtureCorpus()` for indexing plus `processAll`
+- `ingestFixtureCorpus()` for indexing and the async-processing handoff
 - `retrieveSources()` for Search API usage
 - `buildGroundedPrompt()` for explicit grounding
 - `askQuestion()` for Chat API usage and final answer formatting
@@ -114,7 +114,7 @@ What to call out as the command runs:
 - ingest assumptions:
   - the flow targets the sandbox datasource family, defaulting to `interviewds`
   - secrets come from local `env/secrets.env`, while non-secret runtime values live in local `env/variables.env` created from the tracked examples
-  - the sandbox can rate-limit `processAll`, but previously uploaded documents can still remain searchable
+  - Glean processes uploaded content asynchronously, so fresh docs can take a few minutes to appear
 - retrieval behavior:
   - search is scoped to the configured datasource
   - the workflow uses a bounded `topK`
@@ -321,7 +321,7 @@ Suggested script while running:
 
 Speaker note:
 
-- If `processAll` reports `429`, explain that repeated sandbox processing is rate-limited and that this was already observed and documented during validation.
+- If the new documents do not appear immediately, explain that Glean processes uploads asynchronously and the repo now calls that out explicitly in the CLI output and reviewer docs.
 
 ### 8. Optional MCP demo
 

@@ -141,7 +141,7 @@ Observed behavior:
 
 - fixture documents were uploaded successfully
 - the ask flow returned a grounded answer with sources
-- `processAllDocuments` returned a `429` rate-limit response because the endpoint had been invoked recently, but this did not block the end-to-end check because the uploaded documents were already searchable
+- uploaded documents are processed asynchronously by default, so fresh content can take a few minutes to appear after ingest
 
 ### 4. Failure case: missing allowed user email
 
@@ -202,7 +202,7 @@ Fix:
 ## Remaining Caveats
 
 - The selected sandbox datasource is not empty, so some search results may include pre-existing content beyond the fixture corpus.
-- `processAllDocuments` is rate-limited and may return `429` during repeated validation runs; this should be treated as an operational caveat, not necessarily a functional failure, when the uploaded documents are already discoverable.
+- Freshly uploaded documents are processed asynchronously, so a validation run may need a short wait before new content becomes discoverable.
 
 ## Recommended Next Step
 

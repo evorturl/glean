@@ -179,7 +179,7 @@ Why accepted:
 
 - The fixture corpus is intentionally small and hand-authored.
 - Search results can include shared sandbox content outside the fixture set.
-- Repeated ingest runs can hit `processAll` rate limiting.
+- Freshly uploaded documents are processed asynchronously, so they can take a few minutes to appear in search.
 - There is no persistent app layer, auth broker, or multi-user runtime beyond the local tooling.
 - The answer quality depends heavily on sandbox retrieval quality and the current prompt shape.
 
