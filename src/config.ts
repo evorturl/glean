@@ -18,26 +18,26 @@ const optionalEnvSchema = z.object({
 
 type OptionalEnv = z.infer<typeof optionalEnvSchema>;
 
-export type BaseConfig = {
-  instance: string;
-  serverURL: string;
-  defaultDatasource: string;
-  defaultTopK: number;
-};
-
-export type IngestConfig = BaseConfig & {
-  indexingApiToken: string;
-  datasource: string;
-  allowedUserEmail: string;
-};
-
 export type AskConfig = BaseConfig & {
-  searchApiToken: string;
   clientApiToken: string;
   clientActAs?: string;
   datasource: string;
-  topK: number;
   includeCitations: boolean;
+  searchApiToken: string;
+  topK: number;
+};
+
+export type BaseConfig = {
+  defaultDatasource: string;
+  defaultTopK: number;
+  instance: string;
+  serverURL: string;
+};
+
+export type IngestConfig = BaseConfig & {
+  allowedUserEmail: string;
+  datasource: string;
+  indexingApiToken: string;
 };
 
 function readOptionalEnv(name: string) {

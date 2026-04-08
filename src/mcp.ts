@@ -22,12 +22,16 @@ async function main() {
       description:
         "Answer employee questions from the indexed sandbox datasource and return the supporting sources.",
       inputSchema: {
-        question: z.string().min(1).describe("Natural-language employee question."),
         datasource: z
           .string()
           .min(1)
           .optional()
           .describe("Sandbox datasource to search. Defaults to the configured datasource."),
+        includeCitations: z
+          .boolean()
+          .optional()
+          .describe("Whether to append a citation appendix to the answer."),
+        question: z.string().min(1).describe("Natural-language employee question."),
         topK: z
           .number()
           .int()
@@ -35,17 +39,13 @@ async function main() {
           .max(10)
           .optional()
           .describe("How many search hits to retrieve before generating the answer."),
-        includeCitations: z
-          .boolean()
-          .optional()
-          .describe("Whether to append a citation appendix to the answer."),
       },
     },
-    async ({ question, datasource, topK, includeCitations }) => {
+    async ({ datasource, includeCitations, question, topK }) => {
       const config = loadAskConfig({
         datasource,
-        topK,
         includeCitations,
+        topK,
       });
       const result = await askQuestion(config, question);
 

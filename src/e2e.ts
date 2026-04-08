@@ -36,14 +36,6 @@ function parseArgs(argv: string[]): ParsedArgs {
   return parsed;
 }
 
-function readStringFlag(
-  parsed: ParsedArgs,
-  key: string,
-): string | undefined {
-  const value = parsed.flags[key];
-  return typeof value === "string" ? value : undefined;
-}
-
 function readNumberFlag(parsed: ParsedArgs, key: string) {
   const value = readStringFlag(parsed, key);
 
@@ -58,6 +50,14 @@ function readNumberFlag(parsed: ParsedArgs, key: string) {
   }
 
   return number;
+}
+
+function readStringFlag(
+  parsed: ParsedArgs,
+  key: string,
+): string | undefined {
+  const value = parsed.flags[key];
+  return typeof value === "string" ? value : undefined;
 }
 
 async function main() {

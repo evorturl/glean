@@ -1,33 +1,33 @@
-export type FixtureDocument = {
-  id: string;
-  title: string;
-  filename: string;
-  summary: string;
-  tags: string[];
-  body: string;
+export type AskQuestionResult = {
+  answer: string;
+  datasource: string;
+  question: string;
+  searchRequestId: string | null;
+  sources: AskSource[];
 };
 
 export type AskSource = {
+  datasource: string | null;
   id: string | null;
+  snippet: string;
   title: string;
   url: string;
-  snippet: string;
-  datasource: string | null;
+};
+
+export type FixtureDocument = {
+  body: string;
+  filename: string;
+  id: string;
+  summary: string;
+  tags: string[];
+  title: string;
 };
 
 export type IngestResult = {
   datasource: string;
-  indexedCount: number;
   documentIds: string[];
   documentTitles: string[];
-  processingTriggered: boolean;
+  indexedCount: number;
   processingMessage: string;
-};
-
-export type AskQuestionResult = {
-  question: string;
-  datasource: string;
-  answer: string;
-  sources: AskSource[];
-  searchRequestId: string | null;
+  processingTriggered: boolean;
 };
