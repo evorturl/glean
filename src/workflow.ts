@@ -63,7 +63,7 @@ function toDocumentDefinition(
       textContent: doc.body,
     },
     permissions: {
-      allowedUsers: [{ email: config.allowedUserEmail }],
+      allowedUsers: config.allowedUserEmails.map((email) => ({ email })),
       allowAnonymousAccess: false,
       allowAllDatasourceUsersAccess: false,
     },

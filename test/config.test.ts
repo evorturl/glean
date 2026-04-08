@@ -36,7 +36,7 @@ test("loadIngestConfig uses configured base values and required tokens", () => {
 
   assert.equal(config.datasource, "interviewds");
   assert.equal(config.indexingApiToken, "index-token");
-  assert.equal(config.allowedUserEmail, "alex@glean-sandbox.com");
+  assert.deepEqual(config.allowedUserEmails, ["alex@glean-sandbox.com"]);
 });
 
 test("loadIngestConfig falls back to env for allowed user email", () => {
@@ -46,7 +46,21 @@ test("loadIngestConfig falls back to env for allowed user email", () => {
 
   const config = loadIngestConfig({});
 
-  assert.equal(config.allowedUserEmail, "alex@glean-sandbox.com");
+  assert.deepEqual(config.allowedUserEmails, ["alex@glean-sandbox.com"]);
+});
+
+test("loadIngestConfig accepts multiple allowed users from env", () => {
+  setRequiredBaseEnv();
+  process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
+  process.env.GLEAN_ALLOWED_USER_EMAILS =
+    "alex@glean-sandbox.com, sam@glean-sandbox.com";
+
+  const config = loadIngestConfig({});
+
+  assert.deepEqual(config.allowedUserEmails, [
+    "alex@glean-sandbox.com",
+    "sam@glean-sandbox.com",
+  ]);
 });
 
 test("loadIngestConfig reuses act-as identity when allowed user email is unset", () => {
@@ -56,7 +70,21 @@ test("loadIngestConfig reuses act-as identity when allowed user email is unset",
 
   const config = loadIngestConfig({});
 
-  assert.equal(config.allowedUserEmail, "alex@glean-sandbox.com");
+  assert.deepEqual(config.allowedUserEmails, ["alex@glean-sandbox.com"]);
+});
+
+test("loadIngestConfig accepts multiple allowed users from CLI options", () => {
+  setRequiredBaseEnv();
+  process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
+
+  const config = loadIngestConfig({
+    allowedUserEmails: "alex@glean-sandbox.com,sam@glean-sandbox.com",
+  });
+
+  assert.deepEqual(config.allowedUserEmails, [
+    "alex@glean-sandbox.com",
+    "sam@glean-sandbox.com",
+  ]);
 });
 
 test("loadAskConfig preserves optional chat act-as identity", () => {
@@ -78,6 +106,7 @@ test("loadAskConfig preserves optional chat act-as identity", () => {
 
 test("loadIngestConfig fails when allowed user email is missing", () => {
   setRequiredBaseEnv();
+  delete process.env.GLEAN_ALLOWED_USER_EMAILS;
   delete process.env.GLEAN_ALLOWED_USER_EMAIL;
   delete process.env.GLEAN_CLIENT_ACT_AS;
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
