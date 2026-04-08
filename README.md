@@ -120,6 +120,12 @@ Ingest the fixture corpus:
 npm run ingest
 ```
 
+The ingest output prints:
+
+- the indexed document IDs and titles
+- the processing status for the datasource
+- and a follow-up confirmation path telling you which fixture titles to search for, plus the recommended `npm run ask` command to verify discoverability immediately
+
 Ask a question:
 
 ```bash

@@ -39,7 +39,7 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 ## Command Surface
 
 - `npm run setup`: installs dependencies and creates `env/secrets.env` from the tracked example when missing.
-- `npm run ingest`: uploads the fixture documents into the configured sandbox datasource.
+- `npm run ingest`: uploads the fixture documents into the configured sandbox datasource and prints the immediate search/discoverability follow-up path.
 - `npm run ask -- --question "..."`: asks a grounded question against the configured datasource.
 - `npm run demo`: runs the default ingest plus a representative question end to end.
 - `npm run mcp`: starts the local MCP server that exposes `ask_company_docs`.
@@ -63,6 +63,12 @@ The default demo question is:
 `Can I work remotely while attending a conference abroad?`
 
 This exercises the full intended path: ingest fixtures, search the sandbox datasource, generate a grounded answer, and return supporting sources.
+
+If a reviewer runs `npm run ingest` separately, the CLI now also prints:
+
+- the indexed titles,
+- the datasource processing status,
+- and an explicit next step describing what to search for in Glean or which `npm run ask` command to run next.
 
 ## Clean-Checkout Verification Target
 
