@@ -95,6 +95,9 @@ async function main() {
 
     console.log(JSON.stringify(result, null, 2));
     console.log(
+      "\nGlean processes uploaded documents asynchronously, so new content can take a few minutes to appear in search.",
+    );
+    console.log(
       `\nIndexed content should now be discoverable in datasource "${result.datasource}".`,
     );
     console.log(

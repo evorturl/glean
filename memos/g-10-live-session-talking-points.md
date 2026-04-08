@@ -43,5 +43,5 @@ Use these notes to move the follow-up session past basic orientation and into de
 ## Risks To Call Out Honestly
 
 - Shared sandbox state can make retrieval outputs noisier than a fully isolated environment.
-- Repeated ingest validation can hit `processAll` rate limits.
+- Freshly uploaded documents can take a few minutes to appear because Glean processes them asynchronously.
 - The current prompt-based grounding is readable and easy to review, but it is not the same as a production retrieval pipeline with stricter controls.

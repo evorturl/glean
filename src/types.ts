@@ -28,6 +28,4 @@ export type IngestResult = {
   documentIds: string[];
   documentTitles: string[];
   indexedCount: number;
-  processingMessage: string;
-  processingTriggered: boolean;
 };

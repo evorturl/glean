@@ -68,7 +68,7 @@ This exercises the full intended path: ingest fixtures, search the sandbox datas
 If a reviewer runs `npm run ingest` separately, the CLI now also prints:
 
 - the indexed titles,
-- the datasource processing status,
+- a reminder that Glean processes uploaded content asynchronously and fresh docs can take a few minutes to appear,
 - and an explicit next step describing what to search for in Glean or which `npm run ask` command to run next.
 
 ## Clean-Checkout Verification Target
@@ -83,6 +83,6 @@ If a reviewer runs `npm run ingest` separately, the CLI now also prints:
 ## Known Caveats
 
 - The live demo still depends on valid sandbox credentials; the example file only documents the shape.
-- Re-running ingest too quickly can return `429` from `processAll`; this is expected sandbox rate limiting and does not invalidate already-uploaded fixture documents.
+- Freshly uploaded documents are processed asynchronously by Glean, so they can take a few minutes to appear in search.
 - `npm run clean` is intentionally local-only because fixture ingestion uses stable document IDs and updates them in place.
 - Final narrative documentation and broader architecture write-up remain part of `G-10`.

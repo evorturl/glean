@@ -95,29 +95,11 @@ export async function ingestFixtureCorpus(
     );
   }
 
-  let processingTriggered = false;
-  let processingMessage: string;
-
-  try {
-    await indexingClient.indexing.documents.processAll({
-      datasource: config.datasource,
-    });
-    processingTriggered = true;
-    processingMessage =
-      "Triggered document processing for the selected datasource.";
-  } catch (error) {
-    processingMessage = `Documents were uploaded, but processAll failed or is rate-limited: ${formatError(
-      error,
-    )}`;
-  }
-
   return {
     datasource: config.datasource,
     indexedCount: docs.length,
     documentIds: docs.map((doc) => doc.id),
     documentTitles: docs.map((doc) => doc.title),
-    processingTriggered,
-    processingMessage,
   };
 }
 
@@ -227,7 +209,7 @@ export async function askQuestion(
 
   if (sources.length === 0) {
     throw new Error(
-      `No relevant documents were found in datasource "${config.datasource}". Run the ingest command first, wait for processing to complete, and confirm the indexing token can write to that datasource.`,
+      `No relevant documents were found in datasource "${config.datasource}". Run the ingest command first, wait a few minutes for asynchronous processing to complete, and confirm the indexing token can write to that datasource.`,
     );
   }
 

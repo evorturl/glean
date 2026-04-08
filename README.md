@@ -125,7 +125,7 @@ npm run ingest
 The ingest output prints:
 
 - the indexed document IDs and titles
-- the processing status for the datasource
+- a note that Glean processes uploaded content asynchronously and fresh docs can take a few minutes to appear
 - and a follow-up confirmation path telling you which fixture titles to search for, plus the recommended `npm run ask` command to verify discoverability immediately
 
 Ask a question:
@@ -206,7 +206,7 @@ GitHub Actions:
 ## Known Caveats
 
 - The sandbox datasource is shared, so search results can include content beyond the fixture corpus.
-- Repeated ingest runs can hit `processAll` rate limiting (`429`) without preventing already-uploaded documents from being searchable.
+- Freshly uploaded documents are processed asynchronously by Glean, so they can take a few minutes to appear in search.
 - The current implementation favors a small, reviewable prototype over production concerns such as multi-user isolation, robust filtering, or deployment packaging beyond local review.
 
 ## Related Notes
