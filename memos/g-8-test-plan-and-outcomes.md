@@ -96,7 +96,7 @@ Required GitHub secrets:
 - `GLEAN_INDEXING_API_TOKEN`
 - `GLEAN_SEARCH_API_TOKEN`
 - `GLEAN_CLIENT_API_TOKEN`
-- `GLEAN_ALLOWED_USER_EMAIL`
+- `GLEAN_ALLOWED_USER_EMAILS` or `GLEAN_ALLOWED_USER_EMAIL`
 - `GLEAN_CLIENT_ACT_AS`
 
 ## Validation Runs
@@ -130,7 +130,7 @@ Outcome:
 Command:
 
 ```bash
-GLEAN_CLIENT_ACT_AS=alex@glean-sandbox.com npm run test:e2e -- --datasource interviewds --allowed-user-email alex@glean-sandbox.com --question "Can I work remotely while attending a conference abroad?"
+GLEAN_CLIENT_ACT_AS=alex@glean-sandbox.com npm run test:e2e -- --datasource interviewds --allowed-user-emails alex@glean-sandbox.com --question "Can I work remotely while attending a conference abroad?"
 ```
 
 Outcome:

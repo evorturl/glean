@@ -6,12 +6,14 @@ import { z } from "zod";
 const envDirectory = path.resolve(process.cwd(), "env");
 const secretsEnvPath = path.join(envDirectory, "secrets.env");
 const variablesEnvPath = path.join(envDirectory, "variables.env");
+const emailSchema = z.email();
 
 loadDotenv({ path: variablesEnvPath, override: false });
 loadDotenv({ path: secretsEnvPath, override: false });
 
 const optionalEnvSchema = z.object({
-  GLEAN_ALLOWED_USER_EMAIL: z.email().optional(),
+  GLEAN_ALLOWED_USER_EMAIL: z.string().optional(),
+  GLEAN_ALLOWED_USER_EMAILS: z.string().optional(),
   GLEAN_CLIENT_ACT_AS: z.email().optional(),
   GLEAN_SERVER_URL: z.url().optional(),
 });
@@ -35,7 +37,7 @@ export type BaseConfig = {
 };
 
 export type IngestConfig = BaseConfig & {
-  allowedUserEmail: string;
+  allowedUserEmails: string[];
   datasource: string;
   indexingApiToken: string;
 };
@@ -60,6 +62,69 @@ function requirePositiveIntEnv(name: string, filePath: string) {
 
 function loadOptionalEnv(): OptionalEnv {
   return optionalEnvSchema.parse(process.env);
+}
+
+function parseEmailList(value: string | undefined, sourceLabel: string) {
+  if (!value) {
+    return [];
+  }
+
+  const emails = value
+    .split(",")
+    .map((candidate) => candidate.trim())
+    .filter((candidate) => candidate.length > 0);
+
+  if (emails.length === 0) {
+    return [];
+  }
+
+  return emails.map((email) => {
+    try {
+      return emailSchema.parse(email);
+    } catch {
+      throw new Error(
+        `Invalid email "${email}" in ${sourceLabel}. Use a comma-separated list of valid email addresses.`,
+      );
+    }
+  });
+}
+
+function readAllowedUserEmails(options: {
+  allowedUserEmail?: string;
+  allowedUserEmails?: string;
+}, env: OptionalEnv) {
+  const sources = [
+    {
+      label: "--allowed-user-emails",
+      value: options.allowedUserEmails,
+    },
+    {
+      label: "--allowed-user-email",
+      value: options.allowedUserEmail,
+    },
+    {
+      label: "GLEAN_ALLOWED_USER_EMAILS in env/variables.env",
+      value: env.GLEAN_ALLOWED_USER_EMAILS,
+    },
+    {
+      label: "GLEAN_ALLOWED_USER_EMAIL in env/variables.env",
+      value: env.GLEAN_ALLOWED_USER_EMAIL,
+    },
+    {
+      label: "GLEAN_CLIENT_ACT_AS in env/variables.env",
+      value: env.GLEAN_CLIENT_ACT_AS,
+    },
+  ];
+
+  for (const source of sources) {
+    const emails = parseEmailList(source.value, source.label);
+
+    if (emails.length > 0) {
+      return [...new Set(emails.map((email) => email.toLowerCase()))];
+    }
+  }
+
+  return [];
 }
 
 export function deriveServerURL(instance: string, override?: string) {
@@ -109,17 +174,15 @@ function requireToken(name: string, value: string | undefined) {
 export function loadIngestConfig(options: {
   datasource?: string;
   allowedUserEmail?: string;
+  allowedUserEmails?: string;
 }): IngestConfig {
   const base = getBaseConfig();
   const env = loadOptionalEnv();
-  const allowedUserEmail =
-    options.allowedUserEmail ??
-    env.GLEAN_ALLOWED_USER_EMAIL ??
-    env.GLEAN_CLIENT_ACT_AS;
+  const allowedUserEmails = readAllowedUserEmails(options, env);
 
-  if (!allowedUserEmail) {
+  if (allowedUserEmails.length === 0) {
     throw new Error(
-      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in env/variables.env, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
+      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAILS, GLEAN_ALLOWED_USER_EMAIL, or GLEAN_CLIENT_ACT_AS in env/variables.env, or pass --allowed-user-email/--allowed-user-emails so indexed docs are visible to the sandbox user.",
     );
   }
 
@@ -130,7 +193,7 @@ export function loadIngestConfig(options: {
       readOptionalEnv("GLEAN_INDEXING_API_TOKEN"),
     ),
     datasource: options.datasource ?? base.defaultDatasource,
-    allowedUserEmail,
+    allowedUserEmails,
   };
 }
 

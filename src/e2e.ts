@@ -64,6 +64,7 @@ async function main() {
   const parsed = parseArgs(process.argv.slice(2));
   const datasource = readStringFlag(parsed, "datasource");
   const allowedUserEmail = readStringFlag(parsed, "allowed-user-email");
+  const allowedUserEmails = readStringFlag(parsed, "allowed-user-emails");
   const question =
     readStringFlag(parsed, "question") ??
     "Can I work remotely while attending a conference abroad?";
@@ -72,6 +73,7 @@ async function main() {
   const ingestConfig = loadIngestConfig({
     datasource,
     allowedUserEmail,
+    allowedUserEmails,
   });
   const askConfig = loadAskConfig({
     datasource,

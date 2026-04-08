@@ -259,7 +259,7 @@ Show:
 
 Speaker note:
 
-- If asked why both `GLEAN_ALLOWED_USER_EMAIL` and `GLEAN_CLIENT_ACT_AS` exist, explain that they reflect two different needs: document visibility and chat auth mode, even though they can reuse the same sandbox identity.
+- If asked why both `GLEAN_ALLOWED_USER_EMAILS` and `GLEAN_CLIENT_ACT_AS` exist, explain that they reflect two different needs: document visibility and chat auth mode, even though the same sandbox identity can still be reused when needed.
 
 ### 4. Explain the ingest side
 
