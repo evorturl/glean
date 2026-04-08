@@ -34,8 +34,11 @@ function formatError(error: unknown) {
   return String(error);
 }
 
-export function buildDatasourceViewURL(datasource: string, documentId: string) {
-  return `https://internal.company.com/${datasource}/${documentId}`;
+const fixtureRepositoryBaseURL =
+  "https://github.com/evorturl/glean/blob/main/fixtures/employee-support";
+
+export function buildFixtureViewURL(filename: string) {
+  return `${fixtureRepositoryBaseURL}/${filename}`;
 }
 
 function toDocumentDefinition(
@@ -49,7 +52,7 @@ function toDocumentDefinition(
     id: doc.id,
     objectType: "Document",
     title: doc.title,
-    viewURL: buildDatasourceViewURL(config.datasource, doc.id),
+    viewURL: buildFixtureViewURL(doc.filename),
     tags: doc.tags,
     summary: {
       mimeType: "text/plain",

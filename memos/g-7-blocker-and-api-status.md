@@ -49,7 +49,8 @@ The prototype was updated to:
 
 - default to `interviewds`,
 - use the correct datasource family in CLI guidance and runtime defaults,
-- generate datasource-compatible document URLs of the form `https://internal.company.com/<datasource>/<document-id>`,
+- initially generate datasource-compatible document URLs that matched the sandbox regex,
+- later broaden the datasource regex so fixture documents could use their real GitHub blob paths under `fixtures/employee-support/`,
 - retain optional `GLEAN_CLIENT_ACT_AS` support for the chat token.
 
 After those changes, ingest succeeded and the end-to-end ask flow ran successfully.

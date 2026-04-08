@@ -78,6 +78,8 @@ test("loadAskConfig preserves optional chat act-as identity", () => {
 
 test("loadIngestConfig fails when allowed user email is missing", () => {
   setRequiredBaseEnv();
+  delete process.env.GLEAN_ALLOWED_USER_EMAIL;
+  delete process.env.GLEAN_CLIENT_ACT_AS;
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
 
   assert.throws(
