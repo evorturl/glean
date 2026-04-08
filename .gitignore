@@ -1,5 +1,5 @@
 env/*
 !env/secrets.env.example
-!env/variables.env
+!env/variables.env.example
 node_modules/
 dist/
