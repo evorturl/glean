@@ -10,14 +10,14 @@ loadDotenv();
 
 const baseEnvSchema = z.object({
   GLEAN_INSTANCE: z.string().min(1).default("support-lab"),
-  GLEAN_SERVER_URL: z.string().url().optional(),
+  GLEAN_SERVER_URL: z.url().optional(),
   GLEAN_DEFAULT_DATASOURCE: z.string().min(1).default("interviewds"),
   GLEAN_DEFAULT_TOP_K: z.coerce.number().int().positive().default(4),
-  GLEAN_ALLOWED_USER_EMAIL: z.string().email().optional(),
+  GLEAN_ALLOWED_USER_EMAIL: z.email().optional(),
   GLEAN_INDEXING_API_TOKEN: z.string().min(1).optional(),
   GLEAN_SEARCH_API_TOKEN: z.string().min(1).optional(),
   GLEAN_CLIENT_API_TOKEN: z.string().min(1).optional(),
-  GLEAN_CLIENT_ACT_AS: z.string().email().optional(),
+  GLEAN_CLIENT_ACT_AS: z.email().optional(),
 });
 
 export type BaseConfig = {

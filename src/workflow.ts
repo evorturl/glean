@@ -120,7 +120,7 @@ export async function ingestFixtureCorpus(
 function searchResultToSource(result: SearchResult): AskSource {
   const snippet =
     result.snippets
-      ?.map((candidate) => candidate.text ?? candidate.snippet ?? "")
+      ?.map((candidate) => candidate.text ?? "")
       .find((candidate) => compactWhitespace(candidate).length > 0) ??
     "No snippet returned.";
 

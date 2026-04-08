@@ -7,17 +7,21 @@ export default tseslint.config(
     ignores: ["dist/**", "node_modules/**"],
   },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
   {
     files: ["**/*.ts"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",
+      parserOptions: {
+        project: "./tsconfig.eslint.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
       globals: {
         ...globals.node,
       },
     },
     rules: {
+      "@typescript-eslint/no-deprecated": "error",
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -27,4 +31,5 @@ export default tseslint.config(
       ],
     },
   },
+  ...tseslint.configs.recommended,
 );
