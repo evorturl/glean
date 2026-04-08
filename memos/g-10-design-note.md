@@ -27,8 +27,6 @@ The shipped prototype has four main layers:
 
 Related diagrams:
 
-- `memos/diagrams/solution-overview.excalidraw`
-- `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
 - `memos/diagrams/runtime-flow-annotated.excalidraw`
 

@@ -33,7 +33,7 @@ The core runtime is intentionally small:
 
 1. `README.md`
 2. `memos/g-10-design-note.md`
-3. `memos/diagrams/solution-overview.excalidraw`
+3. `memos/diagrams/request-data-flow.excalidraw`
 4. `memos/diagrams/runtime-flow-annotated.excalidraw`
 5. `src/workflow.ts`
 6. `memos/g-7-blocker-and-api-status.md`

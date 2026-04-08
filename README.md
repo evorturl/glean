@@ -27,8 +27,6 @@ The project indexes a constrained fixture corpus into a sandbox datasource, retr
 
 Open these in Excalidraw for a quick visual pass:
 
-- `memos/diagrams/solution-overview.excalidraw`
-- `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
 - `memos/diagrams/runtime-flow-annotated.excalidraw`
 
@@ -219,7 +217,5 @@ GitHub Actions:
 - `memos/g-39-collaborative-design-discussion.md`
 - `memos/g-40-live-coding-prep.md`
 - `memos/g-44-engineer-onboarding.md`
-- `memos/diagrams/solution-overview.excalidraw`
-- `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
 - `memos/diagrams/runtime-flow-annotated.excalidraw`
