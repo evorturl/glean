@@ -22,7 +22,7 @@ Added focused unit tests for the most failure-prone pure logic in the current pr
 
 - config defaults and required token handling
 - optional `GLEAN_CLIENT_ACT_AS` propagation
-- datasource-specific `viewURL` generation
+- fixture `viewURL` generation
 - whitespace normalization and truncation helpers
 - grounded prompt construction
 - assistant response extraction
@@ -187,7 +187,7 @@ Found:
 
 Fix:
 
-- generate datasource-compatible `viewURL` values automatically during indexing
+- generate valid fixture `viewURL` values automatically during indexing
 
 ### Chat auth mode not represented in runtime config
 

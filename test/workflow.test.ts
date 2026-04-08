@@ -6,17 +6,17 @@ import type { ChatMessage } from "@gleanwork/api-client/models/components";
 import type { AskSource } from "../src/types.ts";
 import {
   buildCitationAppendix,
-  buildDatasourceViewURL,
+  buildFixtureViewURL,
   buildGroundedPrompt,
   clip,
   compactWhitespace,
   extractAssistantText,
 } from "../src/workflow.ts";
 
-test("buildDatasourceViewURL matches datasource URL shape", () => {
+test("buildFixtureViewURL points to the fixture file in GitHub", () => {
   assert.equal(
-    buildDatasourceViewURL("interviewds", "remote-work-policy"),
-    "https://internal.company.com/interviewds/remote-work-policy",
+    buildFixtureViewURL("remote-work-policy.md"),
+    "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/remote-work-policy.md",
   );
 });
 
@@ -36,7 +36,7 @@ test("buildGroundedPrompt includes question and sources", () => {
     {
       id: "remote-work-policy",
       title: "Remote Work Policy",
-      url: "https://internal.company.com/interviewds/remote-work-policy",
+      url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/remote-work-policy.md",
       snippet: "International remote work is limited to 15 business days.",
       datasource: "CUSTOM_INTERVIEWDS",
     },
@@ -76,14 +76,14 @@ test("buildCitationAppendix formats all sources predictably", () => {
     {
       id: "doc-1",
       title: "Travel Policy",
-      url: "https://internal.company.com/interviewds/travel-policy",
+      url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/travel-and-conference-policy.md",
       snippet: "Travel requires manager approval.",
       datasource: "CUSTOM_INTERVIEWDS",
     },
     {
       id: null,
       title: "Remote Work Policy",
-      url: "https://internal.company.com/interviewds/remote-work-policy",
+      url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/remote-work-policy.md",
       snippet: "Remote work abroad is limited.",
       datasource: "CUSTOM_INTERVIEWDS",
     },

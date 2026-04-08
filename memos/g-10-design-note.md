@@ -51,7 +51,7 @@ Used to upload the fixture corpus and trigger datasource processing.
 
 Implementation detail:
 
-- each fixture document is mapped to a datasource-compatible `viewURL` of the form `https://internal.company.com/<datasource>/<document-id>`
+- each fixture document is mapped to its GitHub blob URL under `fixtures/employee-support/`, and the datasource regex was widened to accept those real repository paths
 - permissions are restricted to the configured sandbox user via `allowedUsers`
 
 ### Search API

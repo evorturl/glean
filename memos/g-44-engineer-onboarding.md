@@ -146,7 +146,7 @@ How to view them:
 
 - in Glean search, search by the fixture titles, such as `Remote Work Policy` or `Travel and Conference Policy`
 - if the indexed document is visible to your user, you should also see it when searching the corresponding datasource
-- the repo also constructs datasource-compatible `viewURL` values in the form `https://internal.company.com/<datasource>/<document-id>` during indexing
+- the repo now indexes fixture docs with their real GitHub blob URLs under `fixtures/employee-support/`
 
 Important caveat:
 
