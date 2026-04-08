@@ -29,9 +29,8 @@ Target length: 12 to 15 minutes.
 Have these tabs ready:
 
 - `README.md`
-- `memos/diagrams/solution-overview.excalidraw`
-- `memos/diagrams/runtime-architecture.excalidraw`
 - `memos/diagrams/request-data-flow.excalidraw`
+- `memos/diagrams/runtime-flow-annotated.excalidraw`
 - `src/workflow.ts`
 - `src/mcp.ts`
 - a terminal in the repo root
@@ -55,7 +54,7 @@ Sample question to reuse consistently:
 
 Speaker notes:
 
-- Open `memos/diagrams/solution-overview.excalidraw`.
+- Open `memos/diagrams/request-data-flow.excalidraw`.
 - Explain that the prototype is intentionally narrow: one constrained corpus, one datasource family, one local MCP tool, and one clean review path.
 
 Suggested script:
@@ -66,7 +65,7 @@ Suggested script:
 
 Speaker notes:
 
-- Open `memos/diagrams/runtime-architecture.excalidraw`.
+- Open `memos/diagrams/runtime-flow-annotated.excalidraw`.
 - Then show `README.md` and the repository map.
 - Point out `src/config.ts`, `src/fixtures.ts`, `src/workflow.ts`, `src/cli.ts`, and `src/mcp.ts`.
 
@@ -205,8 +204,8 @@ Assume the interviewer cares about:
 ## Recommended Demo Sequence
 
 1. Start with `README.md`.
-2. Open `memos/diagrams/solution-overview.excalidraw`.
-3. Open `memos/diagrams/runtime-architecture.excalidraw`.
+2. Open `memos/diagrams/request-data-flow.excalidraw`.
+3. Open `memos/diagrams/runtime-flow-annotated.excalidraw`.
 4. Show `src/config.ts`.
 5. Show `src/workflow.ts`.
 6. Show `src/mcp.ts`.
