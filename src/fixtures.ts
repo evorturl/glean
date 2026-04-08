@@ -12,20 +12,12 @@ const fixtureDirectory = path.resolve(
 
 const fixtureDefinitions: FixtureDefinition[] = [
   {
-    id: "remote-work-policy",
-    title: "Remote Work Policy",
-    filename: "remote-work-policy.md",
+    id: "expense-reimbursement-policy",
+    title: "Expense Reimbursement Policy",
+    filename: "expense-reimbursement-policy.md",
     summary:
-      "Explains hybrid schedule expectations, remote work abroad limits, and approval requirements.",
-    tags: ["policy", "remote-work", "people-ops"],
-  },
-  {
-    id: "paid-time-off-and-holidays",
-    title: "Paid Time Off and Holidays",
-    filename: "paid-time-off-and-holidays.md",
-    summary:
-      "Covers PTO allowances, holiday schedule, and manager approval timing.",
-    tags: ["policy", "pto", "holidays"],
+      "Explains reimbursable travel costs, receipt requirements, and submission deadlines.",
+    tags: ["expenses", "finance", "travel"],
   },
   {
     id: "it-help-desk-onboarding",
@@ -33,15 +25,23 @@ const fixtureDefinitions: FixtureDefinition[] = [
     filename: "it-help-desk-onboarding.md",
     summary:
       "Describes new-hire laptop setup, VPN, MFA, and IT support response times.",
-    tags: ["it", "support", "onboarding"],
+    tags: ["it", "onboarding", "support"],
   },
   {
-    id: "expense-reimbursement-policy",
-    title: "Expense Reimbursement Policy",
-    filename: "expense-reimbursement-policy.md",
+    id: "paid-time-off-and-holidays",
+    title: "Paid Time Off and Holidays",
+    filename: "paid-time-off-and-holidays.md",
     summary:
-      "Explains reimbursable travel costs, receipt requirements, and submission deadlines.",
-    tags: ["finance", "expenses", "travel"],
+      "Covers PTO allowances, holiday schedule, and manager approval timing.",
+    tags: ["holidays", "policy", "pto"],
+  },
+  {
+    id: "remote-work-policy",
+    title: "Remote Work Policy",
+    filename: "remote-work-policy.md",
+    summary:
+      "Explains hybrid schedule expectations, remote work abroad limits, and approval requirements.",
+    tags: ["people-ops", "policy", "remote-work"],
   },
   {
     id: "security-and-password-standards",
@@ -49,7 +49,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     filename: "security-and-password-standards.md",
     summary:
       "Defines password manager use, MFA, phishing escalation, and remote security expectations.",
-    tags: ["security", "passwords", "remote-work"],
+    tags: ["passwords", "remote-work", "security"],
   },
   {
     id: "travel-and-conference-policy",
@@ -57,7 +57,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     filename: "travel-and-conference-policy.md",
     summary:
       "Documents business-travel approvals, conference budgeting, and international travel guardrails.",
-    tags: ["travel", "policy", "conferences"],
+    tags: ["conferences", "policy", "travel"],
   },
 ];
 

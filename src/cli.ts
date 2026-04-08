@@ -36,12 +36,10 @@ function parseArgs(argv: string[]): ParsedArgs {
   return parsed;
 }
 
-function readStringFlag(
-  parsed: ParsedArgs,
-  key: string,
-): string | undefined {
-  const value = parsed.flags[key];
-  return typeof value === "string" ? value : undefined;
+function printUsage() {
+  console.log(`Usage:
+  npm run ingest -- [--allowed-user-email user@example.com] [--datasource interviewds]
+  npm run ask -- --question "What is the remote work policy?" [--datasource interviewds] [--top-k 4] [--include-citations true]`);
 }
 
 function readBooleanFlag(parsed: ParsedArgs, key: string) {
@@ -74,10 +72,12 @@ function readNumberFlag(parsed: ParsedArgs, key: string) {
   return number;
 }
 
-function printUsage() {
-  console.log(`Usage:
-  npm run ingest -- [--allowed-user-email user@example.com] [--datasource interviewds]
-  npm run ask -- --question "What is the remote work policy?" [--datasource interviewds] [--top-k 4] [--include-citations true]`);
+function readStringFlag(
+  parsed: ParsedArgs,
+  key: string,
+): string | undefined {
+  const value = parsed.flags[key];
+  return typeof value === "string" ? value : undefined;
 }
 
 async function main() {
