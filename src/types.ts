@@ -19,6 +19,7 @@ export type IngestResult = {
   datasource: string;
   indexedCount: number;
   documentIds: string[];
+  documentTitles: string[];
   processingTriggered: boolean;
   processingMessage: string;
 };

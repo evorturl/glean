@@ -91,8 +91,18 @@ async function main() {
     });
 
     const result = await ingestFixtureCorpus(config);
+    const sampleTitles = result.documentTitles.slice(0, 3).join(", ");
 
     console.log(JSON.stringify(result, null, 2));
+    console.log(
+      `\nIndexed content should now be discoverable in datasource "${result.datasource}".`,
+    );
+    console.log(
+      `Search Glean for one of these titles to confirm it: ${sampleTitles}.`,
+    );
+    console.log(
+      `Or run: npm run ask -- --datasource ${result.datasource} --question "Can I work remotely while attending a conference abroad?"`,
+    );
     return;
   }
 

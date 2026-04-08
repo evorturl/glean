@@ -115,6 +115,7 @@ export async function ingestFixtureCorpus(
     datasource: config.datasource,
     indexedCount: docs.length,
     documentIds: docs.map((doc) => doc.id),
+    documentTitles: docs.map((doc) => doc.title),
     processingTriggered,
     processingMessage,
   };
