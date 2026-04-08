@@ -73,14 +73,14 @@ export async function ingestFixtureCorpus(
   config: IngestConfig,
 ): Promise<IngestResult> {
   const docs = await loadFixtureDocuments();
+  const documents = docs.map((doc) => toDocumentDefinition(doc, config));
   const indexingClient = makeClient(config.indexingApiToken, config.serverURL);
 
   try {
-    for (const doc of docs) {
-      await indexingClient.indexing.documents.addOrUpdate({
-        document: toDocumentDefinition(doc, config),
-      });
-    }
+    await indexingClient.indexing.documents.index({
+      datasource: config.datasource,
+      documents,
+    });
   } catch (error) {
     throw new Error(
       `Failed to index documents into datasource "${config.datasource}". Confirm the datasource name, required URL pattern, and token permissions for that datasource before retrying. Original error: ${formatError(
