@@ -1,4 +1,5 @@
 env/*
-!env/local.env.example
+!env/secrets.env.example
+!env/variables.env
 node_modules/
 dist/

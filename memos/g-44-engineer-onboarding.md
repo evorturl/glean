@@ -60,14 +60,15 @@ npm run mcp
 ### Config and environment
 
 - `src/config.ts`
-- `env/local.env.example`
+- `env/variables.env`
+- `env/secrets.env.example`
 
 What to notice:
 
-- `GLEAN_INSTANCE` defaults to `support-lab`
-- `GLEAN_DEFAULT_DATASOURCE` defaults to `interviewds`
+- `GLEAN_INSTANCE`, `GLEAN_DEFAULT_DATASOURCE`, and `GLEAN_DEFAULT_TOP_K` now come from `env/variables.env`
 - ingest requires an allowed user identity
 - ask supports `GLEAN_CLIENT_ACT_AS` for the chat token mode used in the sandbox
+- runtime config no longer applies defaults internally; missing required values fail fast
 
 ### Ingest path
 
@@ -121,7 +122,7 @@ How to view it in the UI:
 How they were used:
 
 - the exercise brief pointed to the `interviewds*` datasource family
-- the repo defaults to `interviewds` in `src/config.ts`, `env/local.env.example`, and `.github/workflows/main-integration.yml`
+- the repo carries `interviewds` in `env/variables.env` and `.github/workflows/main-integration.yml`
 - during the exercise, the implementation was corrected from the wrong `interviews*` names to the correct `interviewds*` family
 - the code is still parameterized, so you can override the datasource with CLI flags or env if you need a different member of that family
 
@@ -174,7 +175,7 @@ Notes:
 
 - this assumes Cursor launches the server from the project root
 - after editing the MCP config, restart Cursor so it reloads the server definitions
-- the server itself still expects the local env variables in `env/local.env`
+- the server expects non-sensitive values in `env/variables.env` and secrets in `env/secrets.env`
 
 #### Claude Code
 

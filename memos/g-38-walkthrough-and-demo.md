@@ -114,7 +114,7 @@ What to call out as the command runs:
 
 - ingest assumptions:
   - the flow targets the sandbox datasource family, defaulting to `interviewds`
-  - auth comes from local env, not committed files
+  - secrets come from `env/secrets.env`, while non-sensitive runtime defaults live in tracked `env/variables.env`
   - the sandbox can rate-limit `processAll`, but previously uploaded documents can still remain searchable
 - retrieval behavior:
   - search is scoped to the configured datasource
@@ -253,7 +253,8 @@ Suggested script:
 
 Show:
 
-- `env/local.env.example`
+- `env/variables.env`
+- `env/secrets.env.example`
 - `src/config.ts`
 - `memos/g-9-deploy-readiness.md`
 
