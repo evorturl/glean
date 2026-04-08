@@ -3,22 +3,20 @@ import path from "node:path";
 import { config as loadDotenv } from "dotenv";
 import { z } from "zod";
 
-const localEnvPath = path.resolve(process.cwd(), "env/local.env");
+const envDirectory = path.resolve(process.cwd(), "env");
+const secretsEnvPath = path.join(envDirectory, "secrets.env");
+const variablesEnvPath = path.join(envDirectory, "variables.env");
 
-loadDotenv({ path: localEnvPath, override: false });
-loadDotenv();
+loadDotenv({ path: variablesEnvPath, override: false });
+loadDotenv({ path: secretsEnvPath, override: false });
 
-const baseEnvSchema = z.object({
-  GLEAN_INSTANCE: z.string().min(1).default("support-lab"),
-  GLEAN_SERVER_URL: z.url().optional(),
-  GLEAN_DEFAULT_DATASOURCE: z.string().min(1).default("interviewds"),
-  GLEAN_DEFAULT_TOP_K: z.coerce.number().int().positive().default(4),
+const optionalEnvSchema = z.object({
   GLEAN_ALLOWED_USER_EMAIL: z.email().optional(),
-  GLEAN_INDEXING_API_TOKEN: z.string().min(1).optional(),
-  GLEAN_SEARCH_API_TOKEN: z.string().min(1).optional(),
-  GLEAN_CLIENT_API_TOKEN: z.string().min(1).optional(),
   GLEAN_CLIENT_ACT_AS: z.email().optional(),
+  GLEAN_SERVER_URL: z.url().optional(),
 });
+
+type OptionalEnv = z.infer<typeof optionalEnvSchema>;
 
 export type BaseConfig = {
   instance: string;
@@ -42,8 +40,26 @@ export type AskConfig = BaseConfig & {
   includeCitations: boolean;
 };
 
-function loadBaseEnv() {
-  return baseEnvSchema.parse(process.env);
+function readOptionalEnv(name: string) {
+  const value = process.env[name]?.trim();
+  return value ? value : undefined;
+}
+
+function requirePositiveIntEnv(name: string, filePath: string) {
+  const value = requireStringEnv(name, filePath);
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    throw new Error(
+      `Invalid ${name}: expected a positive integer in ${filePath}, received "${value}".`,
+    );
+  }
+
+  return parsed;
+}
+
+function loadOptionalEnv(): OptionalEnv {
+  return optionalEnvSchema.parse(process.env);
 }
 
 export function deriveServerURL(instance: string, override?: string) {
@@ -51,20 +67,39 @@ export function deriveServerURL(instance: string, override?: string) {
 }
 
 function getBaseConfig(): BaseConfig {
-  const env = loadBaseEnv();
+  const env = loadOptionalEnv();
+  const instance = requireStringEnv("GLEAN_INSTANCE", "env/variables.env");
 
   return {
-    instance: env.GLEAN_INSTANCE,
-    serverURL: deriveServerURL(env.GLEAN_INSTANCE, env.GLEAN_SERVER_URL),
-    defaultDatasource: env.GLEAN_DEFAULT_DATASOURCE,
-    defaultTopK: env.GLEAN_DEFAULT_TOP_K,
+    instance,
+    serverURL: deriveServerURL(instance, env.GLEAN_SERVER_URL),
+    defaultDatasource: requireStringEnv(
+      "GLEAN_DEFAULT_DATASOURCE",
+      "env/variables.env",
+    ),
+    defaultTopK: requirePositiveIntEnv(
+      "GLEAN_DEFAULT_TOP_K",
+      "env/variables.env",
+    ),
   };
+}
+
+function requireStringEnv(name: string, filePath: string) {
+  const value = process.env[name]?.trim();
+
+  if (!value) {
+    throw new Error(
+      `Missing ${name}. Add it to ${filePath} before running this command.`,
+    );
+  }
+
+  return value;
 }
 
 function requireToken(name: string, value: string | undefined) {
   if (!value) {
     throw new Error(
-      `Missing ${name}. Add it to env/local.env before running this command.`,
+      `Missing ${name}. Add it to env/secrets.env before running this command.`,
     );
   }
 
@@ -76,7 +111,7 @@ export function loadIngestConfig(options: {
   allowedUserEmail?: string;
 }): IngestConfig {
   const base = getBaseConfig();
-  const env = loadBaseEnv();
+  const env = loadOptionalEnv();
   const allowedUserEmail =
     options.allowedUserEmail ??
     env.GLEAN_ALLOWED_USER_EMAIL ??
@@ -84,7 +119,7 @@ export function loadIngestConfig(options: {
 
   if (!allowedUserEmail) {
     throw new Error(
-      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL in env/local.env, reuse GLEAN_CLIENT_ACT_AS, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
+      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAIL or GLEAN_CLIENT_ACT_AS in env/secrets.env, or pass --allowed-user-email so indexed docs are visible to the sandbox user.",
     );
   }
 
@@ -92,7 +127,7 @@ export function loadIngestConfig(options: {
     ...base,
     indexingApiToken: requireToken(
       "GLEAN_INDEXING_API_TOKEN",
-      env.GLEAN_INDEXING_API_TOKEN,
+      readOptionalEnv("GLEAN_INDEXING_API_TOKEN"),
     ),
     datasource: options.datasource ?? base.defaultDatasource,
     allowedUserEmail,
@@ -105,17 +140,17 @@ export function loadAskConfig(options: {
   includeCitations?: boolean;
 }): AskConfig {
   const base = getBaseConfig();
-  const env = loadBaseEnv();
+  const env = loadOptionalEnv();
 
   return {
     ...base,
     searchApiToken: requireToken(
       "GLEAN_SEARCH_API_TOKEN",
-      env.GLEAN_SEARCH_API_TOKEN,
+      readOptionalEnv("GLEAN_SEARCH_API_TOKEN"),
     ),
     clientApiToken: requireToken(
       "GLEAN_CLIENT_API_TOKEN",
-      env.GLEAN_CLIENT_API_TOKEN,
+      readOptionalEnv("GLEAN_CLIENT_API_TOKEN"),
     ),
     clientActAs: env.GLEAN_CLIENT_ACT_AS,
     datasource: options.datasource ?? base.defaultDatasource,

@@ -13,6 +13,12 @@ test.afterEach(() => {
   process.env = { ...originalEnv };
 });
 
+function setRequiredBaseEnv() {
+  process.env.GLEAN_INSTANCE = "support-lab";
+  process.env.GLEAN_DEFAULT_DATASOURCE = "interviewds";
+  process.env.GLEAN_DEFAULT_TOP_K = "4";
+}
+
 test("deriveServerURL falls back to instance backend URL", () => {
   assert.equal(
     deriveServerURL("support-lab"),
@@ -20,9 +26,8 @@ test("deriveServerURL falls back to instance backend URL", () => {
   );
 });
 
-test("loadIngestConfig uses defaults and required values", () => {
-  process.env.GLEAN_INSTANCE = "support-lab";
-  process.env.GLEAN_DEFAULT_DATASOURCE = "interviewds";
+test("loadIngestConfig uses configured base values and required tokens", () => {
+  setRequiredBaseEnv();
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
 
   const config = loadIngestConfig({
@@ -35,8 +40,7 @@ test("loadIngestConfig uses defaults and required values", () => {
 });
 
 test("loadIngestConfig falls back to env for allowed user email", () => {
-  process.env.GLEAN_INSTANCE = "support-lab";
-  process.env.GLEAN_DEFAULT_DATASOURCE = "interviewds";
+  setRequiredBaseEnv();
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
   process.env.GLEAN_ALLOWED_USER_EMAIL = "alex@glean-sandbox.com";
 
@@ -46,8 +50,7 @@ test("loadIngestConfig falls back to env for allowed user email", () => {
 });
 
 test("loadIngestConfig reuses act-as identity when allowed user email is unset", () => {
-  process.env.GLEAN_INSTANCE = "support-lab";
-  process.env.GLEAN_DEFAULT_DATASOURCE = "interviewds";
+  setRequiredBaseEnv();
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
   process.env.GLEAN_CLIENT_ACT_AS = "alex@glean-sandbox.com";
 
@@ -57,8 +60,7 @@ test("loadIngestConfig reuses act-as identity when allowed user email is unset",
 });
 
 test("loadAskConfig preserves optional chat act-as identity", () => {
-  process.env.GLEAN_INSTANCE = "support-lab";
-  process.env.GLEAN_DEFAULT_DATASOURCE = "interviewds";
+  setRequiredBaseEnv();
   process.env.GLEAN_SEARCH_API_TOKEN = "search-token";
   process.env.GLEAN_CLIENT_API_TOKEN = "client-token";
   process.env.GLEAN_CLIENT_ACT_AS = "alex@glean-sandbox.com";
@@ -75,10 +77,24 @@ test("loadAskConfig preserves optional chat act-as identity", () => {
 });
 
 test("loadIngestConfig fails when allowed user email is missing", () => {
+  setRequiredBaseEnv();
   process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
 
   assert.throws(
     () => loadIngestConfig({}),
     /Missing allowed user email/,
+  );
+});
+
+test("loadIngestConfig fails when required base variables are missing", () => {
+  delete process.env.GLEAN_INSTANCE;
+  delete process.env.GLEAN_DEFAULT_DATASOURCE;
+  delete process.env.GLEAN_DEFAULT_TOP_K;
+  process.env.GLEAN_INDEXING_API_TOKEN = "index-token";
+  process.env.GLEAN_ALLOWED_USER_EMAIL = "alex@glean-sandbox.com";
+
+  assert.throws(
+    () => loadIngestConfig({}),
+    /Missing GLEAN_INSTANCE/,
   );
 });

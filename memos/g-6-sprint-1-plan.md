@@ -188,7 +188,7 @@ This set is small enough to ingest and inspect manually, but large enough to dem
 
 ### Local secret handling
 
-- Keep tokens in `env/local.env`.
+- Keep tokens in `env/secrets.env`.
 - Do not commit tokens, passwords, or copied credentials into repository files.
 - Use committed examples only for variable names and setup instructions.
 

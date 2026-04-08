@@ -37,17 +37,17 @@ Open these in Excalidraw for a quick visual pass:
 - Node.js 22 or later
 - npm
 - access to the Glean sandbox instance and datasource family used for the exercise
-- valid values for the required environment variables in `env/local.env`
+- valid values in `env/variables.env` and `env/secrets.env`
 
 ## Quick Start
 
-1. Install dependencies and create the local env file template:
+1. Install dependencies and create `env/secrets.env` from the tracked example if it is missing:
 
 ```bash
 npm run setup
 ```
 
-2. Fill in `env/local.env` using `env/local.env.example`.
+2. Fill in `env/secrets.env` using `env/secrets.env.example`. Review `env/variables.env` if you need to change the tracked non-sensitive defaults.
 
 3. Run the local quality suite:
 
@@ -69,18 +69,26 @@ npm run demo
 
 ## Environment Variables
 
-Required API tokens:
+Tracked non-sensitive config in `env/variables.env`:
+
+- `GLEAN_INSTANCE`
+- `GLEAN_DEFAULT_DATASOURCE`
+- `GLEAN_DEFAULT_TOP_K`
+- optional `GLEAN_SERVER_URL`
+
+Populate secrets and user-specific values in `env/secrets.env`:
 
 - `GLEAN_INDEXING_API_TOKEN`
 - `GLEAN_SEARCH_API_TOKEN`
 - `GLEAN_CLIENT_API_TOKEN`
+- `GLEAN_ALLOWED_USER_EMAIL` or `GLEAN_CLIENT_ACT_AS`
 
 Required identity input:
 
 - `GLEAN_ALLOWED_USER_EMAIL` for document visibility during ingest, or
 - `GLEAN_CLIENT_ACT_AS` when the same sandbox user should also be reused as the ingest visibility identity
 
-Defaults already captured in `env/local.env.example`:
+Tracked defaults already supplied in `env/variables.env`:
 
 - `GLEAN_INSTANCE=support-lab`
 - `GLEAN_DEFAULT_DATASOURCE=interviewds`
@@ -94,7 +102,7 @@ Optional overrides:
 
 ## Commands
 
-- `npm run setup`: install dependencies and create `env/local.env` from the tracked example when missing
+- `npm run setup`: install dependencies and create `env/secrets.env` from the tracked example when missing
 - `npm run ingest`: index the fixture corpus into the configured datasource
 - `npm run ask -- --question "..."`: run retrieval plus grounded answer generation from the CLI
 - `npm run demo`: run the default ingest and question flow
