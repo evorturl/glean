@@ -73,7 +73,7 @@ What was tested:
 Successful validation:
 
 ```bash
-npm run ingest -- --datasource interviewds --allowed-user-email alex@glean-sandbox.com
+npm run ingest -- --datasource interviewds --allowed-user-emails alex@glean-sandbox.com
 ```
 
 Observed result:
@@ -145,7 +145,7 @@ Validated:
 
 - `npm run typecheck`
 - `npm run build`
-- `npm run ingest -- --datasource interviewds --allowed-user-email alex@glean-sandbox.com`
+- `npm run ingest -- --datasource interviewds --allowed-user-emails alex@glean-sandbox.com`
 - `GLEAN_CLIENT_ACT_AS=alex@glean-sandbox.com npm run ask -- --datasource interviewds --question "Can I work remotely while attending a conference abroad?"`
 
 Observed outcome:

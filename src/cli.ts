@@ -38,7 +38,7 @@ function parseArgs(argv: string[]): ParsedArgs {
 
 function printUsage() {
   console.log(`Usage:
-  npm run ingest -- [--allowed-user-email user@example.com] [--allowed-user-emails user1@example.com,user2@example.com] [--datasource interviewds]
+  npm run ingest -- [--allowed-user-emails user1@example.com,user2@example.com] [--datasource interviewds]
   npm run ask -- --question "What is the remote work policy?" [--datasource interviewds] [--top-k 4] [--include-citations true]`);
 }
 
@@ -87,7 +87,6 @@ async function main() {
   if (command === "ingest") {
     const config = loadIngestConfig({
       datasource: readStringFlag(parsed, "datasource"),
-      allowedUserEmail: readStringFlag(parsed, "allowed-user-email"),
       allowedUserEmails: readStringFlag(parsed, "allowed-user-emails"),
     });
 

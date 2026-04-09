@@ -75,7 +75,7 @@ Example non-sensitive config in `env/variables.env.example` is copied to local `
 - `GLEAN_DEFAULT_DATASOURCE`
 - `GLEAN_DEFAULT_TOP_K`
 - optional `GLEAN_SERVER_URL`
-- `GLEAN_ALLOWED_USER_EMAILS` or `GLEAN_ALLOWED_USER_EMAIL`
+- `GLEAN_ALLOWED_USER_EMAILS`
 - optional `GLEAN_CLIENT_ACT_AS`
 
 Example secrets in `env/secrets.env.example` are copied to local `env/secrets.env`:
@@ -89,7 +89,6 @@ Example secrets in `env/secrets.env.example` are copied to local `env/secrets.en
 Required identity input:
 
 - `GLEAN_ALLOWED_USER_EMAILS` in `env/variables.env` for document visibility during ingest. Use a comma-separated list when multiple users need access.
-- `GLEAN_ALLOWED_USER_EMAIL` remains supported for a single sandbox user.
 - `GLEAN_CLIENT_ACT_AS` in `env/variables.env` can still double as the ingest visibility identity when no explicit allowed-user setting is supplied.
 
 Default non-secret values shipped in `env/variables.env.example`:

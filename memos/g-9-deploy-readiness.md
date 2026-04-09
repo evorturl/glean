@@ -21,7 +21,6 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 ### Required identity input
 
 - `GLEAN_ALLOWED_USER_EMAILS`: comma-separated sandbox users that should be able to see the indexed fixture docs.
-- `GLEAN_ALLOWED_USER_EMAIL`: still supported when only one sandbox user needs access.
 - `GLEAN_CLIENT_ACT_AS`: can double as the ingest visibility identity when the same sandbox user should also be used for chat impersonation.
 
 ### Required in `env/variables.env`
@@ -29,7 +28,7 @@ This memo packages the coding exercise for asynchronous review. It defines the c
 - `GLEAN_INSTANCE`: set to `support-lab` in `env/variables.env.example`.
 - `GLEAN_DEFAULT_DATASOURCE`: set to `interviewds` in `env/variables.env.example`.
 - `GLEAN_DEFAULT_TOP_K`: set to `4` in `env/variables.env.example`.
-- `GLEAN_ALLOWED_USER_EMAILS` or `GLEAN_ALLOWED_USER_EMAIL`: set the sandbox visibility identities locally in `env/variables.env`.
+- `GLEAN_ALLOWED_USER_EMAILS`: set the sandbox visibility identities locally in `env/variables.env`.
 
 ### Optional
 
