@@ -11,13 +11,12 @@ permissions:
 
 jobs:
   integration:
-    if: ${{ secrets.GLEAN_INDEXING_API_TOKEN != '' && secrets.GLEAN_SEARCH_API_TOKEN != '' && secrets.GLEAN_CLIENT_API_TOKEN != '' && (secrets.GLEAN_ALLOWED_USER_EMAILS != '' || secrets.GLEAN_ALLOWED_USER_EMAIL != '' || secrets.GLEAN_CLIENT_ACT_AS != '') }}
+    if: ${{ secrets.GLEAN_INDEXING_API_TOKEN != '' && secrets.GLEAN_SEARCH_API_TOKEN != '' && secrets.GLEAN_CLIENT_API_TOKEN != '' && (secrets.GLEAN_ALLOWED_USER_EMAILS != '' || secrets.GLEAN_CLIENT_ACT_AS != '') }}
     runs-on: ubuntu-latest
     env:
       GLEAN_INSTANCE: support-lab
       GLEAN_DEFAULT_DATASOURCE: interviewds
       GLEAN_ALLOWED_USER_EMAILS: ${{ secrets.GLEAN_ALLOWED_USER_EMAILS }}
-      GLEAN_ALLOWED_USER_EMAIL: ${{ secrets.GLEAN_ALLOWED_USER_EMAIL }}
       GLEAN_INDEXING_API_TOKEN: ${{ secrets.GLEAN_INDEXING_API_TOKEN }}
       GLEAN_SEARCH_API_TOKEN: ${{ secrets.GLEAN_SEARCH_API_TOKEN }}
       GLEAN_CLIENT_API_TOKEN: ${{ secrets.GLEAN_CLIENT_API_TOKEN }}
@@ -45,7 +44,7 @@ jobs:
         run: npm run test:e2e -- --datasource interviewds --question "Can I work remotely while attending a conference abroad?"
 
   integration-skipped:
-    if: ${{ !(secrets.GLEAN_INDEXING_API_TOKEN != '' && secrets.GLEAN_SEARCH_API_TOKEN != '' && secrets.GLEAN_CLIENT_API_TOKEN != '' && (secrets.GLEAN_ALLOWED_USER_EMAILS != '' || secrets.GLEAN_ALLOWED_USER_EMAIL != '' || secrets.GLEAN_CLIENT_ACT_AS != '')) }}
+    if: ${{ !(secrets.GLEAN_INDEXING_API_TOKEN != '' && secrets.GLEAN_SEARCH_API_TOKEN != '' && secrets.GLEAN_CLIENT_API_TOKEN != '' && (secrets.GLEAN_ALLOWED_USER_EMAILS != '' || secrets.GLEAN_CLIENT_ACT_AS != '')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Explain skipped integration run

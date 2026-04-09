@@ -12,7 +12,6 @@ loadDotenv({ path: variablesEnvPath, override: false });
 loadDotenv({ path: secretsEnvPath, override: false });
 
 const optionalEnvSchema = z.object({
-  GLEAN_ALLOWED_USER_EMAIL: z.string().optional(),
   GLEAN_ALLOWED_USER_EMAILS: z.string().optional(),
   GLEAN_CLIENT_ACT_AS: z.email().optional(),
   GLEAN_SERVER_URL: z.url().optional(),
@@ -90,7 +89,6 @@ function parseEmailList(value: string | undefined, sourceLabel: string) {
 }
 
 function readAllowedUserEmails(options: {
-  allowedUserEmail?: string;
   allowedUserEmails?: string;
 }, env: OptionalEnv) {
   const sources = [
@@ -99,16 +97,8 @@ function readAllowedUserEmails(options: {
       value: options.allowedUserEmails,
     },
     {
-      label: "--allowed-user-email",
-      value: options.allowedUserEmail,
-    },
-    {
       label: "GLEAN_ALLOWED_USER_EMAILS in env/variables.env",
       value: env.GLEAN_ALLOWED_USER_EMAILS,
-    },
-    {
-      label: "GLEAN_ALLOWED_USER_EMAIL in env/variables.env",
-      value: env.GLEAN_ALLOWED_USER_EMAIL,
     },
     {
       label: "GLEAN_CLIENT_ACT_AS in env/variables.env",
@@ -173,7 +163,6 @@ function requireToken(name: string, value: string | undefined) {
 
 export function loadIngestConfig(options: {
   datasource?: string;
-  allowedUserEmail?: string;
   allowedUserEmails?: string;
 }): IngestConfig {
   const base = getBaseConfig();
@@ -182,7 +171,7 @@ export function loadIngestConfig(options: {
 
   if (allowedUserEmails.length === 0) {
     throw new Error(
-      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAILS, GLEAN_ALLOWED_USER_EMAIL, or GLEAN_CLIENT_ACT_AS in env/variables.env, or pass --allowed-user-email/--allowed-user-emails so indexed docs are visible to the sandbox user.",
+      "Missing allowed user email. Set GLEAN_ALLOWED_USER_EMAILS or GLEAN_CLIENT_ACT_AS in env/variables.env, or pass --allowed-user-emails so indexed docs are visible to the sandbox user.",
     );
   }
 
