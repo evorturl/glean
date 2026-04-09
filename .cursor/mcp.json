@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "glean-employee-support": {
+      "command": "/usr/bin/env",
+      "args": [
+        "PATH=/opt/homebrew/bin:/usr/local/bin:${env:PATH}",
+        "node",
+        "node_modules/tsx/dist/cli.mjs",
+        "src/mcp.ts"
+      ]
+    }
+  }
+}

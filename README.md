@@ -19,6 +19,7 @@ The project indexes a constrained fixture corpus into a sandbox datasource, retr
 - `src/workflow.ts`: Glean ingest, search, and grounded chat orchestration
 - `src/cli.ts`: local ingest and ask command surface
 - `src/mcp.ts`: MCP server registration for `ask_company_docs`
+- `.cursor/mcp.json`: repo-scoped Cursor MCP registration for the local `agent` CLI
 - `test/`: focused unit coverage for config and workflow helpers
 - `scripts/`: reviewer-facing setup, demo, and cleanup wrappers
 - `memos/`: planning, validation, deploy, and design documentation
@@ -166,6 +167,34 @@ Example tool input:
 
 The tool returns both plain text content and structured output containing the answer, selected datasource, sources, and search request ID.
 
+### Cursor Agent CLI
+
+This repository includes a committed `.cursor/mcp.json` so Cursor's `agent` CLI can discover and start the local MCP server for this repo without copying secrets into Cursor config files.
+
+Verify the MCP registration from the repo root:
+
+```bash
+agent mcp list
+```
+
+If the server shows as configured but not yet approved, enable it:
+
+```bash
+agent mcp enable glean-employee-support
+```
+
+Then start `agent` from the repo root and ask it to use `ask_company_docs`, for example:
+
+```text
+Use ask_company_docs to answer: "Can I work remotely while attending a conference abroad?"
+```
+
+The MCP server still reads credentials from `env/variables.env` and `env/secrets.env`, so keep all keys there rather than in `.cursor/mcp.json`. The server resolves those files relative to the project, and the repo config launches `tsx` directly through `/usr/bin/env` so the MCP stdio stream is not polluted by `npm run` banner output.
+
+For non-interactive `agent --print` sessions running with approval gating, pass `--force` or allow `Mcp(glean-employee-support, ask_company_docs)` in your Cursor CLI permissions. Otherwise the server can load successfully while the actual tool call is still rejected.
+
+If `agent mcp list` does not pick up the project-scoped config, confirm the workspace is trusted. If the CLI still does not detect `.cursor/mcp.json`, use the same server entry in `~/.cursor/mcp.json` as a fallback and rerun `agent mcp list`.
+
 ## Review Flow
 
 Recommended reviewer path:
@@ -175,7 +204,7 @@ Recommended reviewer path:
 3. Skim `memos/g-10-design-note.md` for architecture, tradeoffs, and limitations.
 4. Run `npm run check` and `npm run build`.
 5. Run `npm run demo`.
-6. Optionally start `npm run mcp` and exercise `ask_company_docs`.
+6. Optionally run `agent mcp list`, then exercise `ask_company_docs` through Cursor `agent` or by starting `npm run mcp` directly.
 7. Review `memos/g-10-live-session-talking-points.md` for discussion topics.
 
 ## Onboarding
@@ -209,6 +238,8 @@ GitHub Actions:
 - The sandbox datasource is shared, so search results can include content beyond the fixture corpus.
 - Freshly uploaded documents are processed asynchronously by Glean, so they can take a few minutes to appear in search.
 - The current implementation favors a small, reviewable prototype over production concerns such as multi-user isolation, robust filtering, or deployment packaging beyond local review.
+- Some Cursor CLI builds do not reliably pick up project-scoped `.cursor/mcp.json`. If `agent mcp list` shows no configured MCP servers from the repo root, trust the workspace and fall back to `~/.cursor/mcp.json` with the same server entry.
+- If `agent mcp list-tools glean-employee-support` fails with a `spawn ... ENOENT` error, your local Node install may live outside the default PATH used by Cursor. Update the committed `.cursor/mcp.json` PATH entry or point the launcher at your absolute `node` path.
 
 ## Related Notes
 

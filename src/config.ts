@@ -1,15 +1,17 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { config as loadDotenv } from "dotenv";
 import { z } from "zod";
 
-const envDirectory = path.resolve(process.cwd(), "env");
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const envDirectory = path.join(projectRoot, "env");
 const secretsEnvPath = path.join(envDirectory, "secrets.env");
 const variablesEnvPath = path.join(envDirectory, "variables.env");
 const emailSchema = z.email();
 
-loadDotenv({ path: variablesEnvPath, override: false });
-loadDotenv({ path: secretsEnvPath, override: false });
+loadDotenv({ path: variablesEnvPath, override: false, quiet: true });
+loadDotenv({ path: secretsEnvPath, override: false, quiet: true });
 
 const optionalEnvSchema = z.object({
   GLEAN_ALLOWED_USER_EMAILS: z.string().optional(),
