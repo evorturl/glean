@@ -30,6 +30,7 @@ Open these in Excalidraw for a quick visual pass:
 
 - `memos/diagrams/request-data-flow.excalidraw`
 - `memos/diagrams/runtime-flow-annotated.excalidraw`
+- `memos/diagrams/remote-mcp-enterprise-architecture.excalidraw`
 
 ## Requirements
 
@@ -249,9 +250,11 @@ GitHub Actions:
 - `memos/g-9-deploy-readiness.md`
 - `memos/g-10-design-note.md`
 - `memos/g-10-live-session-talking-points.md`
+- `memos/g-53-remote-mcp-enterprise-deployment.md`
 - `memos/g-38-walkthrough-and-demo.md`
 - `memos/g-39-collaborative-design-discussion.md`
 - `memos/g-40-live-coding-prep.md`
 - `memos/g-44-engineer-onboarding.md`
 - `memos/diagrams/request-data-flow.excalidraw`
 - `memos/diagrams/runtime-flow-annotated.excalidraw`
+- `memos/diagrams/remote-mcp-enterprise-architecture.excalidraw`
