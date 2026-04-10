@@ -34,13 +34,6 @@ function formatError(error: unknown) {
   return String(error);
 }
 
-const fixtureRepositoryBaseURL =
-  "https://github.com/evorturl/glean/blob/main/fixtures/employee-support";
-
-export function buildFixtureViewURL(filename: string) {
-  return `${fixtureRepositoryBaseURL}/${filename}`;
-}
-
 function toDocumentDefinition(
   doc: Awaited<ReturnType<typeof loadFixtureDocuments>>[number],
   config: IngestConfig,
@@ -52,7 +45,7 @@ function toDocumentDefinition(
     id: doc.id,
     objectType: "Document",
     title: doc.title,
-    viewURL: buildFixtureViewURL(doc.filename),
+    viewURL: doc.url,
     tags: doc.tags,
     summary: {
       mimeType: "text/plain",
