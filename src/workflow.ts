@@ -10,6 +10,30 @@ import type { AskConfig, IngestConfig } from "./config.js";
 import { loadFixtureDocuments } from "./fixtures.js";
 import type { AskQuestionResult, AskSource, IngestResult } from "./types.js";
 
+export const SEARCH_TIMEOUT_MILLIS = 40_000;
+export const CHAT_TIMEOUT_MILLIS = 40_000;
+
+export type WorkflowProgressEvent =
+  | {
+      kind: "message";
+      message: string;
+    }
+  | {
+      kind: "timed-start";
+      message: string;
+      timeoutMillis: number;
+    }
+  | {
+      kind: "timed-end";
+      message: string;
+    };
+
+type WorkflowProgressHandler = (event: WorkflowProgressEvent) => void;
+
+type WorkflowOptions = {
+  onProgress?: WorkflowProgressHandler;
+};
+
 function makeClient(apiToken: string, serverURL: string) {
   return new Glean({ apiToken, serverURL });
 }
@@ -67,8 +91,17 @@ function toDocumentDefinition(
 
 export async function ingestFixtureCorpus(
   config: IngestConfig,
+  options: WorkflowOptions = {},
 ): Promise<IngestResult> {
+  options.onProgress?.({
+    kind: "message",
+    message: "Loading fixture documents...",
+  });
   const docs = await loadFixtureDocuments();
+  options.onProgress?.({
+    kind: "message",
+    message: `Uploading ${docs.length} fixture documents to datasource "${config.datasource}"...`,
+  });
   const documents = docs.map((doc) => toDocumentDefinition(doc, config));
   const indexingClient = makeClient(config.indexingApiToken, config.serverURL);
 
@@ -87,6 +120,11 @@ export async function ingestFixtureCorpus(
       },
     );
   }
+
+  options.onProgress?.({
+    kind: "message",
+    message: `Indexed ${docs.length} fixture documents into datasource "${config.datasource}".`,
+  });
 
   return {
     datasource: config.datasource,
@@ -127,7 +165,7 @@ async function retrieveSources(
       returnLlmContentOverSnippets: true,
       responseHints: ["RESULTS"],
     },
-    timeoutMillis: 20000,
+    timeoutMillis: SEARCH_TIMEOUT_MILLIS,
   });
 
   const sources = (response.results ?? []).map(searchResultToSource);
@@ -197,8 +235,18 @@ export function buildCitationAppendix(sources: AskSource[]) {
 export async function askQuestion(
   config: AskConfig,
   question: string,
+  options: WorkflowOptions = {},
 ): Promise<AskQuestionResult> {
+  options.onProgress?.({
+    kind: "timed-start",
+    message: `Searching datasource "${config.datasource}"...`,
+    timeoutMillis: SEARCH_TIMEOUT_MILLIS,
+  });
   const { response, sources } = await retrieveSources(config, question);
+  options.onProgress?.({
+    kind: "timed-end",
+    message: `Search completed with ${sources.length} source${sources.length === 1 ? "" : "s"}.`,
+  });
 
   if (sources.length === 0) {
     throw new Error(
@@ -206,6 +254,11 @@ export async function askQuestion(
     );
   }
 
+  options.onProgress?.({
+    kind: "timed-start",
+    message: `Generating grounded answer from ${sources.length} source${sources.length === 1 ? "" : "s"}...`,
+    timeoutMillis: CHAT_TIMEOUT_MILLIS,
+  });
   const chatClient = makeClient(config.clientApiToken, config.serverURL);
   const chatResponse = await chatClient.client.chat.create({
     messages: [
@@ -214,7 +267,7 @@ export async function askQuestion(
         fragments: [{ text: buildGroundedPrompt(question, sources) }],
       },
     ],
-    timeoutMillis: 20000,
+    timeoutMillis: CHAT_TIMEOUT_MILLIS,
   }, undefined, undefined, config.clientActAs
     ? {
         headers: {
@@ -231,6 +284,10 @@ export async function askQuestion(
     );
   }
 
+  options.onProgress?.({
+    kind: "timed-end",
+    message: "Answer ready.",
+  });
   const answer = config.includeCitations
     ? `${assistantText}\n\nSources\n${buildCitationAppendix(sources)}`
     : assistantText;
