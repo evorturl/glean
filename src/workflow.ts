@@ -20,6 +20,7 @@ export type WorkflowProgressEvent =
     }
   | {
       kind: "timed-start";
+      display?: "bar" | "message";
       message: string;
       timeoutMillis: number;
     }
@@ -239,6 +240,7 @@ export async function askQuestion(
 ): Promise<AskQuestionResult> {
   options.onProgress?.({
     kind: "timed-start",
+    display: "message",
     message: `Searching datasource "${config.datasource}"...`,
     timeoutMillis: SEARCH_TIMEOUT_MILLIS,
   });
@@ -256,6 +258,7 @@ export async function askQuestion(
 
   options.onProgress?.({
     kind: "timed-start",
+    display: "bar",
     message: `Generating grounded answer from ${sources.length} source${sources.length === 1 ? "" : "s"}...`,
     timeoutMillis: CHAT_TIMEOUT_MILLIS,
   });

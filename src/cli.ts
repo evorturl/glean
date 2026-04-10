@@ -159,6 +159,12 @@ function reportProgress(event: WorkflowProgressEvent) {
   }
 
   if (event.kind === "timed-start") {
+    if (event.display === "message") {
+      stopTimedProgress();
+      console.error(`[progress] ${event.message}`);
+      return;
+    }
+
     startTimedProgress(event.message, event.timeoutMillis);
     return;
   }
