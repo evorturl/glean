@@ -85,7 +85,6 @@ function readStringFlag(
 }
 
 type ActiveTimedProgress = {
-  interval: NodeJS.Timeout;
   message: string;
   startedAt: number;
   timeoutMillis: number;
@@ -110,14 +109,19 @@ function buildProgressBar(
   return `${"=".repeat(filled)}${"-".repeat(Math.max(width - filled, 0))}`;
 }
 
-function renderTimedProgress(message: string, startedAt: number, timeoutMillis: number) {
+function printTimedProgress(
+  message: string,
+  startedAt: number,
+  timeoutMillis: number,
+  summary?: string,
+) {
   const elapsedMillis = Date.now() - startedAt;
   const bar = buildProgressBar(elapsedMillis, timeoutMillis);
-  const line =
+  const prefix =
     `[progress] ${message} [${bar}] ` +
     `${formatDuration(elapsedMillis)} / ${formatDuration(timeoutMillis)}`;
 
-  process.stderr.write(`\r${line}`);
+  console.error(summary ? `${prefix} - ${summary}` : prefix);
 }
 
 function stopTimedProgress(finalMessage?: string) {
@@ -128,42 +132,22 @@ function stopTimedProgress(finalMessage?: string) {
     return;
   }
 
-  clearInterval(activeTimedProgress.interval);
-  if (process.stderr.isTTY) {
-    renderTimedProgress(
-      activeTimedProgress.message,
-      activeTimedProgress.startedAt,
-      activeTimedProgress.timeoutMillis,
-    );
-    process.stderr.write("\n");
-  }
+  printTimedProgress(
+    activeTimedProgress.message,
+    activeTimedProgress.startedAt,
+    activeTimedProgress.timeoutMillis,
+    finalMessage,
+  );
   activeTimedProgress = null;
-
-  if (finalMessage) {
-    console.error(`[progress] ${finalMessage}`);
-  }
 }
 
 function startTimedProgress(message: string, timeoutMillis: number) {
   stopTimedProgress();
 
-  if (!process.stderr.isTTY) {
-    console.error(
-      `[progress] ${message} (timeout ${formatDuration(timeoutMillis)})`,
-    );
-    return;
-  }
-
-  const startedAt = Date.now();
-  renderTimedProgress(message, startedAt, timeoutMillis);
-
   activeTimedProgress = {
     message,
-    startedAt,
+    startedAt: Date.now(),
     timeoutMillis,
-    interval: setInterval(() => {
-      renderTimedProgress(message, startedAt, timeoutMillis);
-    }, 100),
   };
 }
 
