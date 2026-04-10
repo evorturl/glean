@@ -85,6 +85,8 @@ function readStringFlag(
 }
 
 type ActiveTimedProgress = {
+  interval: NodeJS.Timeout | null;
+  isLive: boolean;
   message: string;
   startedAt: number;
   timeoutMillis: number;
@@ -109,7 +111,7 @@ function buildProgressBar(
   return `${"=".repeat(filled)}${"-".repeat(Math.max(width - filled, 0))}`;
 }
 
-function printTimedProgress(
+function buildTimedProgressLine(
   message: string,
   startedAt: number,
   timeoutMillis: number,
@@ -121,7 +123,17 @@ function printTimedProgress(
     `[progress] ${message} [${bar}] ` +
     `${formatDuration(elapsedMillis)} / ${formatDuration(timeoutMillis)}`;
 
-  console.error(summary ? `${prefix} - ${summary}` : prefix);
+  return summary ? `${prefix} - ${summary}` : prefix;
+}
+
+function renderTimedProgress(
+  message: string,
+  startedAt: number,
+  timeoutMillis: number,
+) {
+  process.stderr.write(
+    `\r${buildTimedProgressLine(message, startedAt, timeoutMillis)}`,
+  );
 }
 
 function stopTimedProgress(finalMessage?: string) {
@@ -132,21 +144,55 @@ function stopTimedProgress(finalMessage?: string) {
     return;
   }
 
-  printTimedProgress(
+  if (activeTimedProgress.interval) {
+    clearInterval(activeTimedProgress.interval);
+  }
+
+  const finalLine = buildTimedProgressLine(
     activeTimedProgress.message,
     activeTimedProgress.startedAt,
     activeTimedProgress.timeoutMillis,
     finalMessage,
   );
+
+  if (activeTimedProgress.isLive) {
+    process.stderr.write(`\r${finalLine}\n`);
+  } else {
+    console.error(finalLine);
+  }
+
   activeTimedProgress = null;
 }
 
 function startTimedProgress(message: string, timeoutMillis: number) {
   stopTimedProgress();
 
+  const startedAt = Date.now();
+
+  if (process.stderr.isTTY) {
+    renderTimedProgress(message, startedAt, timeoutMillis);
+
+    activeTimedProgress = {
+      interval: setInterval(() => {
+        renderTimedProgress(message, startedAt, timeoutMillis);
+      }, 100),
+      isLive: true,
+      message,
+      startedAt,
+      timeoutMillis,
+    };
+    return;
+  }
+
+  console.error(
+    `[progress] ${message} (timeout ${formatDuration(timeoutMillis)})`,
+  );
+
   activeTimedProgress = {
+    interval: null,
+    isLive: false,
     message,
-    startedAt: Date.now(),
+    startedAt,
     timeoutMillis,
   };
 }
