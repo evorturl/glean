@@ -21,6 +21,7 @@ export type FixtureDocument = {
   summary: string;
   tags: string[];
   title: string;
+  url: string;
 };
 
 export type IngestResult = {

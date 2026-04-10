@@ -15,6 +15,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "expense-reimbursement-policy",
     title: "Expense Reimbursement Policy",
     filename: "expense-reimbursement-policy.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/expense-reimbursement-policy.md",
     summary:
       "Explains reimbursable travel costs, receipt requirements, and submission deadlines.",
     tags: ["expenses", "finance", "travel"],
@@ -23,6 +24,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "it-help-desk-onboarding",
     title: "IT Help Desk Onboarding Guide",
     filename: "it-help-desk-onboarding.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/it-help-desk-onboarding.md",
     summary:
       "Describes new-hire laptop setup, VPN, MFA, and IT support response times.",
     tags: ["it", "onboarding", "support"],
@@ -31,6 +33,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "paid-time-off-and-holidays",
     title: "Paid Time Off and Holidays",
     filename: "paid-time-off-and-holidays.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/paid-time-off-and-holidays.md",
     summary:
       "Covers PTO allowances, holiday schedule, and manager approval timing.",
     tags: ["holidays", "policy", "pto"],
@@ -39,6 +42,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "remote-work-policy",
     title: "Remote Work Policy",
     filename: "remote-work-policy.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/remote-work-policy.md",
     summary:
       "Explains hybrid schedule expectations, remote work abroad limits, and approval requirements.",
     tags: ["people-ops", "policy", "remote-work"],
@@ -47,6 +51,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "security-and-password-standards",
     title: "Security and Password Standards",
     filename: "security-and-password-standards.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/security-and-password-standards.md",
     summary:
       "Defines password manager use, MFA, phishing escalation, and remote security expectations.",
     tags: ["passwords", "remote-work", "security"],
@@ -55,6 +60,7 @@ const fixtureDefinitions: FixtureDefinition[] = [
     id: "travel-and-conference-policy",
     title: "Travel and Conference Policy",
     filename: "travel-and-conference-policy.md",
+    url: "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/travel-and-conference-policy.md",
     summary:
       "Documents business-travel approvals, conference budgeting, and international travel guardrails.",
     tags: ["conferences", "policy", "travel"],

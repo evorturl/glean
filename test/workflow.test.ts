@@ -3,19 +3,23 @@ import assert from "node:assert/strict";
 
 import type { ChatMessage } from "@gleanwork/api-client/models/components";
 
+import { loadFixtureDocuments } from "../src/fixtures.ts";
 import type { AskSource } from "../src/types.ts";
 import {
   buildCitationAppendix,
-  buildFixtureViewURL,
   buildGroundedPrompt,
   clip,
   compactWhitespace,
   extractAssistantText,
 } from "../src/workflow.ts";
 
-test("buildFixtureViewURL points to the fixture file in GitHub", () => {
+test("fixture definitions include canonical GitHub URLs", async () => {
+  const docs = await loadFixtureDocuments();
+  const remoteWorkPolicy = docs.find((doc) => doc.id === "remote-work-policy");
+
+  assert.ok(remoteWorkPolicy);
   assert.equal(
-    buildFixtureViewURL("remote-work-policy.md"),
+    remoteWorkPolicy.url,
     "https://github.com/evorturl/glean/blob/main/fixtures/employee-support/remote-work-policy.md",
   );
 });
