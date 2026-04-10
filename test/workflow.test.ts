@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import type { ChatMessage } from "@gleanwork/api-client/models/components";
+import type { DocumentDefinition } from "@gleanwork/api-client/models/components";
 
 import { loadFixtureDocuments } from "../src/fixtures.ts";
 import type { AskSource } from "../src/types.ts";
@@ -11,7 +12,18 @@ import {
   clip,
   compactWhitespace,
   extractAssistantText,
+  indexDocumentsWithRetries,
 } from "../src/workflow.ts";
+
+function makeDocumentDefinition(id: string): DocumentDefinition {
+  return {
+    datasource: "interviewds",
+    id,
+    objectType: "Document",
+    title: `Document ${id}`,
+    viewURL: `https://example.com/${id}`,
+  };
+}
 
 test("fixture definitions include canonical GitHub URLs", async () => {
   const docs = await loadFixtureDocuments();
@@ -95,4 +107,62 @@ test("buildCitationAppendix formats all sources predictably", () => {
 
   assert.match(appendix, /\[1\] Travel Policy \(doc-1\)/);
   assert.match(appendix, /\[2\] Remote Work Policy \(no-id\)/);
+});
+
+test("indexDocumentsWithRetries retries only previously failed documents", async () => {
+  const documents = [
+    makeDocumentDefinition("doc-1"),
+    makeDocumentDefinition("doc-2"),
+    makeDocumentDefinition("doc-3"),
+  ];
+  const attemptedDocumentIds: string[] = [];
+  const attemptCounts = new Map<string, number>();
+
+  const result = await indexDocumentsWithRetries(
+    documents,
+    "interviewds",
+    async (document) => {
+      const documentId = document.id ?? "unknown";
+      const attemptCount = (attemptCounts.get(documentId) ?? 0) + 1;
+
+      attemptCounts.set(documentId, attemptCount);
+      attemptedDocumentIds.push(documentId);
+
+      if (documentId !== "doc-1" && attemptCount === 1) {
+        throw new Error(`Temporary failure for ${documentId}`);
+      }
+    },
+  );
+
+  assert.deepEqual(attemptedDocumentIds, [
+    "doc-1",
+    "doc-2",
+    "doc-3",
+    "doc-2",
+    "doc-3",
+  ]);
+  assert.deepEqual(result.retriedDocumentIds, ["doc-2", "doc-3"]);
+});
+
+test("indexDocumentsWithRetries surfaces final failed document ids", async () => {
+  const documents = [
+    makeDocumentDefinition("doc-1"),
+    makeDocumentDefinition("doc-2"),
+  ];
+  const attemptedDocumentIds: string[] = [];
+
+  await assert.rejects(
+    indexDocumentsWithRetries(documents, "interviewds", async (document) => {
+      const documentId = document.id ?? "unknown";
+
+      attemptedDocumentIds.push(documentId);
+
+      if (documentId === "doc-2") {
+        throw new Error("Permanent failure");
+      }
+    }),
+    /Failed document IDs: doc-2/,
+  );
+
+  assert.deepEqual(attemptedDocumentIds, ["doc-1", "doc-2", "doc-2"]);
 });

@@ -12,6 +12,7 @@ import type { AskQuestionResult, AskSource, IngestResult } from "./types.js";
 
 export const SEARCH_TIMEOUT_MILLIS = 40_000;
 export const CHAT_TIMEOUT_MILLIS = 40_000;
+export const INGEST_MAX_ATTEMPTS = 2;
 
 export type WorkflowProgressEvent =
   | {
@@ -35,6 +36,8 @@ type WorkflowOptions = {
   onProgress?: WorkflowProgressHandler;
 };
 
+type IndexDocumentFn = (document: DocumentDefinition) => Promise<void>;
+
 function makeClient(apiToken: string, serverURL: string) {
   return new Glean({ apiToken, serverURL });
 }
@@ -57,6 +60,89 @@ function formatError(error: unknown) {
   }
 
   return String(error);
+}
+
+function formatDocumentLabel(document: DocumentDefinition) {
+  return document.id ?? document.title ?? "unknown-document";
+}
+
+async function uploadDocuments(
+  documents: DocumentDefinition[],
+  indexDocument: IndexDocumentFn,
+) {
+  const results = await Promise.allSettled(
+    documents.map(async (document) => {
+      await indexDocument(document);
+      return document;
+    }),
+  );
+
+  return results.flatMap((result, index) =>
+    result.status === "rejected"
+      ? [
+          {
+            document: documents[index]!,
+            error: result.reason,
+          },
+        ]
+      : [],
+  );
+}
+
+export async function indexDocumentsWithRetries(
+  documents: DocumentDefinition[],
+  datasource: string,
+  indexDocument: IndexDocumentFn,
+  options: WorkflowOptions = {},
+) {
+  let pendingDocuments = documents;
+  const retriedDocumentIds = new Set<string>();
+
+  for (let attempt = 1; attempt <= INGEST_MAX_ATTEMPTS; attempt += 1) {
+    const failures = await uploadDocuments(pendingDocuments, indexDocument);
+
+    if (failures.length === 0) {
+      return {
+        retriedDocumentIds: documents
+          .map((document) => document.id)
+          .filter(
+            (documentId): documentId is string =>
+              typeof documentId === "string" && retriedDocumentIds.has(documentId),
+          ),
+      };
+    }
+
+    const failedDocuments = failures.map((failure) => failure.document);
+
+    if (attempt === INGEST_MAX_ATTEMPTS) {
+      throw new Error(
+        `Failed to index ${failedDocuments.length} document${failedDocuments.length === 1 ? "" : "s"} into datasource "${datasource}" after ${INGEST_MAX_ATTEMPTS} attempts. Failed document IDs: ${failedDocuments
+          .map(formatDocumentLabel)
+          .join(", ")}. Confirm the datasource name, required URL pattern, and token permissions for that datasource before retrying. Last error: ${formatError(
+          failures[0]?.error,
+        )}`,
+        {
+          cause: failures[0]?.error,
+        },
+      );
+    }
+
+    pendingDocuments = failedDocuments;
+    pendingDocuments.forEach((document) => {
+      if (document.id) {
+        retriedDocumentIds.add(document.id);
+      }
+    });
+
+    options.onProgress?.({
+      kind: "message",
+      message: `Attempt ${attempt} indexed ${documents.length - failedDocuments.length} of ${documents.length} fixture documents. Retrying only the ${failedDocuments.length} failed document${failedDocuments.length === 1 ? "" : "s"}...`,
+    });
+  }
+
+  return {
+    retriedDocumentIds: [],
+  };
 }
 
 function toDocumentDefinition(
@@ -107,11 +193,29 @@ export async function ingestFixtureCorpus(
   const indexingClient = makeClient(config.indexingApiToken, config.serverURL);
 
   try {
-    await indexingClient.indexing.documents.index({
-      datasource: config.datasource,
+    const { retriedDocumentIds } = await indexDocumentsWithRetries(
       documents,
+      config.datasource,
+      async (document) => {
+        await indexingClient.indexing.documents.addOrUpdate({
+          document,
+        });
+      },
+      options,
+    );
+
+    options.onProgress?.({
+      kind: "message",
+      message:
+        retriedDocumentIds.length === 0
+          ? `Indexed ${docs.length} fixture documents into datasource "${config.datasource}".`
+          : `Indexed ${docs.length} fixture documents into datasource "${config.datasource}" after retrying ${retriedDocumentIds.length} failed document${retriedDocumentIds.length === 1 ? "" : "s"}.`,
     });
   } catch (error) {
+    if (error instanceof Error && error.message.startsWith("Failed to index")) {
+      throw error;
+    }
+
     throw new Error(
       `Failed to index documents into datasource "${config.datasource}". Confirm the datasource name, required URL pattern, and token permissions for that datasource before retrying. Original error: ${formatError(
         error,
@@ -121,11 +225,6 @@ export async function ingestFixtureCorpus(
       },
     );
   }
-
-  options.onProgress?.({
-    kind: "message",
-    message: `Indexed ${docs.length} fixture documents into datasource "${config.datasource}".`,
-  });
 
   return {
     datasource: config.datasource,
